@@ -1,3 +1,4 @@
+import 'package:e_commerce_flutter/src/view/screen/search_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
@@ -16,6 +17,7 @@ class HomeScreen extends StatelessWidget {
 
   static const List<Widget> screens = [
     AllProductScreen(),
+    SearchScreen(),
     FavoriteScreen(),
     CartScreen(),
     ProfileScreen()
@@ -44,7 +46,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Obx(() {
         return PageTransitionSwitcher(
-          duration: const Duration(seconds: 1),
+          duration: const Duration(milliseconds: 300),
           transitionBuilder: (
             Widget child,
             Animation<double> animation,

@@ -19,6 +19,7 @@ class AppData {
 
   static List<Product> products = [
     Product(
+      id: 1,
       name: 'Samsung Galaxy A53 5G',
       price: 460,
       about: dummyText,
@@ -35,6 +36,7 @@ class AppData {
       type: ProductType.mobile,
     ),
     Product(
+      id: 2,
       name: 'Samsung Galaxy Tab S7 FE',
       price: 380,
       about: dummyText,
@@ -51,6 +53,7 @@ class AppData {
       type: ProductType.tablet,
     ),
     Product(
+      id: 3,
       name: 'Samsung Galaxy Tab S8+',
       price: 650,
       about: dummyText,
@@ -67,6 +70,7 @@ class AppData {
       type: ProductType.tablet,
     ),
     Product(
+      id: 4,
       name: 'Samsung Galaxy Watch 4',
       price: 229,
       about: dummyText,
@@ -90,6 +94,7 @@ class AppData {
       type: ProductType.watch,
     ),
     Product(
+      id: 5,
       name: 'Apple Watch 7',
       price: 330,
       about: dummyText,
@@ -109,6 +114,7 @@ class AppData {
       type: ProductType.watch,
     ),
     Product(
+        id: 6,
         name: 'Beats studio 3',
         price: 230,
         about: dummyText,
@@ -125,6 +131,7 @@ class AppData {
         rating: 2,
         type: ProductType.headphone),
     Product(
+      id: 7,
       name: 'Samsung Q60 A',
       price: 497,
       about: dummyText,
@@ -147,6 +154,7 @@ class AppData {
       type: ProductType.tv,
     ),
     Product(
+      id: 8,
       name: 'Sony x 80 J',
       price: 498,
       about: dummyText,
@@ -214,6 +222,12 @@ class AppData {
     BottomNavyBarItem(
       "Home",
       const Icon(Icons.home),
+      const Color(0xFFEC6813),
+      Colors.grey,
+    ),
+    BottomNavyBarItem(
+      "Search",
+      const Icon(Icons.search),
       const Color(0xFFEC6813),
       Colors.grey,
     ),

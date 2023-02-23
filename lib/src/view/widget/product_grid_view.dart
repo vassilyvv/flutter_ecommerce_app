@@ -82,7 +82,7 @@ class ProductGridView extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 4),
             Row(
               children: [
                 Text(
@@ -113,32 +113,35 @@ class ProductGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Obx(
       () {
         return Padding(
           padding: const EdgeInsets.only(top: 20),
-          child: GridView.builder(
-            itemCount: controller.filteredProducts.length,
-            shrinkWrap: true,
-            physics: const ScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              childAspectRatio: 10 / 16,
-              crossAxisCount: 2,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-            ),
-            itemBuilder: (_, index) {
-              Product product = controller.filteredProducts[index];
-              return OpenContainerWrapper(
-                product: product,
-                child: GridTile(
-                  header: _gridItemHeader(product, index),
-                  footer: _gridItemFooter(product, context),
-                  child: _gridItemBody(product),
-                ),
-              );
-            },
-          ),
+          child: controller.filteredProducts.isNotEmpty
+              ? GridView.builder(
+                  itemCount: controller.filteredProducts.length,
+                  shrinkWrap: true,
+                  physics: const ScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    childAspectRatio: 10 / 16,
+                    crossAxisCount: size.width ~/ 250,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                  ),
+                  itemBuilder: (_, index) {
+                    Product product = controller.filteredProducts[index];
+                    return OpenContainerWrapper(
+                      product: product,
+                      child: GridTile(
+                        header: _gridItemHeader(product, index),
+                        footer: _gridItemFooter(product, context),
+                        child: _gridItemBody(product),
+                      ),
+                    );
+                  },
+                )
+              : Text('no elements'),
         );
       },
     );

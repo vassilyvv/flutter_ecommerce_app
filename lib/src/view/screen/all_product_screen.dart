@@ -10,49 +10,16 @@ enum AppbarActionType { leading, trailing }
 
 final ProductController controller = Get.put(ProductController());
 
-class AllProductScreen extends StatelessWidget {
+class AllProductScreen extends StatefulWidget {
   const AllProductScreen({Key? key}) : super(key: key);
 
-  Widget appBarActionButton(AppbarActionType type) {
-    IconData icon = Icons.ac_unit_outlined;
-
-    if (type == AppbarActionType.trailing) {
-      icon = Icons.search;
-    }
-
-    return Container(
-      margin: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: AppColor.lightGrey,
-      ),
-      child: IconButton(
-        padding: const EdgeInsets.all(8),
-        constraints: const BoxConstraints(),
-        onPressed: () {},
-        icon: Icon(icon, color: Colors.black),
-      ),
-    );
+  @override
+  State<StatefulWidget> createState() {
+    return AllProductsScreenState();
   }
+}
 
-  PreferredSize get _appBar {
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(100),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              appBarActionButton(AppbarActionType.leading),
-              appBarActionButton(AppbarActionType.trailing),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
+class AllProductsScreenState extends State<AllProductScreen> {
   Widget _recommendedProductListView(BuildContext context) {
     return SizedBox(
       height: 170,
@@ -74,41 +41,43 @@ class AllProductScreen extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '30% OFF DURING \nCOVID 19',
-                            style: Theme.of(context)
-                                .textTheme
-                                .displaySmall
-                                ?.copyWith(color: Colors.white),
-                          ),
-                          const SizedBox(height: 8),
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppData
-                                  .recommendedProducts[index]
-                                  .buttonBackgroundColor,
-                              elevation: 0,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 18),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
+                      child: SizedBox(
+                          width: 130,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '30% OFF DURING \nCOVID 19',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall
+                                    ?.copyWith(color: Colors.white),
                               ),
-                            ),
-                            child: Text(
-                              "Get Now",
-                              style: TextStyle(
-                                color: AppData.recommendedProducts[index]
-                                    .buttonTextColor!,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+                              const SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppData
+                                      .recommendedProducts[index]
+                                      .buttonBackgroundColor,
+                                  elevation: 0,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 18),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Get Now",
+                                  style: TextStyle(
+                                    color: AppData.recommendedProducts[index]
+                                        .buttonTextColor!,
+                                  ),
+                                ),
+                              )
+                            ],
+                          )),
                     ),
                     const Spacer(),
                     Image.asset(
@@ -163,7 +132,6 @@ class AllProductScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: _appBar,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(

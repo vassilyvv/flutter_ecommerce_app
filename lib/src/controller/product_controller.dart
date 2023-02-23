@@ -10,6 +10,7 @@ import 'package:e_commerce_flutter/src/model/product_size_type.dart';
 class ProductController extends GetxController {
   RxList<Product> allProducts = AppData.products.obs;
   RxList<Product> filteredProducts = AppData.products.obs;
+  String searchQuery = "";
   RxList<Product> cartProducts = <Product>[].obs;
   RxList<ProductCategory> categories = AppData.categories.obs;
   int length = ProductType.values.length;
@@ -32,6 +33,7 @@ class ProductController extends GetxController {
     }
   }
 
+
   void isLiked(int index) {
     filteredProducts[index].isLiked = !filteredProducts[index].isLiked;
     filteredProducts.refresh();
@@ -47,6 +49,7 @@ class ProductController extends GetxController {
   void increaseItem(int index) {
     Product product = cartProducts[index];
     product.quantity++;
+    cartProducts.refresh();
     calculateTotalPrice();
     update();
   }
@@ -59,11 +62,24 @@ class ProductController extends GetxController {
 
   void decreaseItem(int index) {
     Product product = cartProducts[index];
-    if (product.quantity > 0) {
+    if (product.quantity > 1) {
       product.quantity--;
     }
+    cartProducts.refresh();
     calculateTotalPrice();
     update();
+  }
+
+  void removeItemFromCart(int index) {
+    Product product = cartProducts[index];
+    product.quantity = 0;
+    cartProducts.removeAt(index);
+    calculateTotalPrice();
+    update();
+  }
+
+  bool isProductInCart(int productId) {
+    return cartProducts.where((product) => product.id == productId).isNotEmpty;
   }
 
   void calculateTotalPrice() {
@@ -83,9 +99,12 @@ class ProductController extends GetxController {
         filteredProducts.assignAll(allProducts);
         break;
       case 1:
-        getLikedItems;
+        getFoundItems;
         break;
       case 2:
+        getLikedItems;
+        break;
+      case 3:
         cartProducts.assignAll(allProducts.where((item) => item.quantity > 0));
     }
     currentBottomNavItemIndex.value = index;
@@ -97,6 +116,15 @@ class ProductController extends GetxController {
 
   get getLikedItems => filteredProducts.assignAll(
         allProducts.where((item) => item.isLiked),
+      );
+
+  void search(String query) {
+    searchQuery = query;
+    getFoundItems;
+  }
+
+  get getFoundItems => filteredProducts.assignAll(
+        allProducts.where((item) => item.name.contains(searchQuery)),
       );
 
   List<Numerical> sizeType(Product product) {

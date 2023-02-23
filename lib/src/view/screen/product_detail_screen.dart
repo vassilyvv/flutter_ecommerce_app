@@ -15,14 +15,18 @@ class ProductDetailScreen extends StatelessWidget {
 
   ProductDetailScreen(this.product, {Key? key}) : super(key: key);
 
+  void _goBack(BuildContext context) {
+    controller.productImageDefaultIndex.value = 0;
+    Navigator.pop(context);
+  }
+
   PreferredSizeWidget _appBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
         onPressed: () {
-          controller.productImageDefaultIndex.value = 0;
-          Navigator.pop(context);
+          _goBack(context);
         },
         icon: const Icon(Icons.arrow_back, color: Colors.black),
       ),
@@ -126,6 +130,27 @@ class ProductDetailScreen extends StatelessWidget {
     );
   }
 
+  ElevatedButton _addToCartButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed:
+          product.isAvailable ? () => controller.addToCart(product) : null,
+      child: const Text("Add to cart"),
+    );
+  }
+
+  ElevatedButton _goToCartButton(BuildContext context) {
+    return ElevatedButton(
+      style: TextButton.styleFrom(
+        backgroundColor: const Color.fromARGB(255, 0, 200, 0),
+      ),
+      onPressed: () {
+        controller.switchBetweenBottomNavigationItems(3);
+        _goBack(context);
+      },
+      child: const Text("Go to cart"),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -196,15 +221,14 @@ class ProductDetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: product.isAvailable
-                            ? () => controller.addToCart(product)
-                            : null,
-                        child: const Text("Add to cart"),
-                      ),
-                    )
+                    Obx(() {
+                      return SizedBox(
+                        width: double.infinity,
+                        child: controller.isProductInCart(product.id)
+                            ? _goToCartButton(context)
+                            : _addToCartButton(context),
+                      );
+                    })
                   ],
                 ),
               )

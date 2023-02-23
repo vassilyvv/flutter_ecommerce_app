@@ -3,6 +3,7 @@ import 'package:e_commerce_flutter/src/model/product_size_type.dart';
 enum ProductType { all, watch, mobile, headphone, tablet, tv }
 
 class Product {
+  int id;
   String name;
   int price;
   int? off;
@@ -16,7 +17,8 @@ class Product {
   ProductType type;
 
   Product(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.price,
       required this.about,
       required this.isAvailable,
