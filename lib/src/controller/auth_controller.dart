@@ -34,7 +34,7 @@ class AuthController extends GetxController {
     }
   }
 
-  void authenticate(String phoneNumber, String password, String otp) async {
+  void authenticate(String phoneNumber, String password, String? otp) async {
     LoginResponse loginResponse = await apiClient.authenticate(
         phoneNumber, password, otp);
     if (loginResponse.statusCode == 200) {

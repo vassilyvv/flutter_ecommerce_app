@@ -15,7 +15,7 @@ import '../model/transaction_entry.dart';
 
 final AuthController controller = getx.Get.put(AuthController());
 const apiBaseUrl = String.fromEnvironment('apiBaseUrl',
-    defaultValue: 'http://localhost:8000');
+    defaultValue: 'https://api.very.supply');
 
 class GenericResponse {
   late int statusCode;
@@ -126,7 +126,7 @@ class UpdatePasswordResponse extends GenericResponse {
 }
 
 class UserDataResponse extends GenericResponse {
-  late String id;
+  late int id;
   late String firstName;
   late String lastName;
   late String? email;
@@ -158,6 +158,8 @@ class UserDataResponse extends GenericResponse {
     if (response.statusCode! < 300) {
       id = response.data["id"];
       email = response.data['email'];
+      firstName = response.data['first_name'];
+      lastName = response.data['last_name'];
       isEmailConfirmed = response.data['is_email_confirmed'];
       emailCandidate = response.data['email_candidate'];
       phoneNumber = response.data['phone_number'];
@@ -365,10 +367,10 @@ class APIClient {
   }
 
   Future<LoginResponse> authenticate(
-      String phoneNumber, String password, String otp) async {
+      String phoneNumber, String password, String? otp) async {
     Response response = await _dio.post(
       "$apiBaseUrl/moses/token/obtain/",
-      data: {'phone_number': phoneNumber, 'password': password, 'otp': otp},
+      data: {'phone_number': phoneNumber, 'password': password, 'otp': otp ?? ""},
       options: Options(validateStatus: (status) => status! < 500),
     );
     return LoginResponse.fromResponse(response);

@@ -6,7 +6,7 @@ class User {
   String? accessToken;
   String? refreshToken;
 
-  String? id;
+  int? id;
 
   bool? isEmailConfirmed;
   String? emailCandidate;

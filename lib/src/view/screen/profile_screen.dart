@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../../controller/auth_controller.dart';
 import '../form/login.dart';
+
+
+final AuthController controller = Get.put(AuthController());
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -10,8 +15,8 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          LoginForm(),
+        children: [
+          Obx(() => controller.authenticatedUser.value == null ?  LoginForm():Text(controller.authenticatedUser.value!.phoneNumber!)),
         ],
       ),
     );
