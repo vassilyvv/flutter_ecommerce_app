@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_flutter/core/app_theme.dart';
 import 'package:e_commerce_flutter/src/view/screen/home_screen.dart';
+import 'package:get/get.dart';
 
 void main() => runApp(const MyApp());
 
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       scrollBehavior: const MaterialScrollBehavior().copyWith(
         dragDevices: {
           PointerDeviceKind.mouse,

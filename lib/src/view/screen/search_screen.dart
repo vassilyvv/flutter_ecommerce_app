@@ -16,7 +16,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class SearchScreenState extends State<SearchScreen> {
-  TextEditingController searchQueryController = TextEditingController(text: controller.searchQuery);
+  TextEditingController searchQueryController = TextEditingController(text: controller.searchQuery.value);
 
   Widget searchQueryInput() {
     return TextField(

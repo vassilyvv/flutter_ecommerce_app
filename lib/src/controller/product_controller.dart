@@ -10,7 +10,7 @@ import 'package:e_commerce_flutter/src/model/product_size_type.dart';
 class ProductController extends GetxController {
   RxList<Product> allProducts = AppData.products.obs;
   RxList<Product> filteredProducts = AppData.products.obs;
-  String searchQuery = "";
+  RxString searchQuery = "".obs;
   RxList<Product> cartProducts = <Product>[].obs;
   RxList<ProductCategory> categories = AppData.categories.obs;
   int length = ProductType.values.length;
@@ -119,7 +119,7 @@ class ProductController extends GetxController {
       );
 
   void search(String query) {
-    searchQuery = query;
+    searchQuery.value = query;
     getFoundItems;
   }
 
