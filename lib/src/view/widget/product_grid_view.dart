@@ -14,10 +14,9 @@ class ProductGridView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Visibility(
-            visible: controller.isPriceOff(product),
+            visible: productController.isPriceOff(product),
             child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
+              decoration: const BoxDecoration(
                 color: Colors.white,
               ),
               width: 80,
@@ -32,11 +31,11 @@ class ProductGridView extends StatelessWidget {
           IconButton(
             icon: Icon(
               Icons.favorite,
-              color: controller.filteredProducts[index].isLiked
+              color: productController.filteredProducts[index].isLiked
                   ? Colors.redAccent
                   : const Color(0xFFA6A3A0),
             ),
-            onPressed: () => controller.isLiked(index),
+            onPressed: () => productController.isLiked(index),
           ),
         ],
       ),
@@ -46,11 +45,10 @@ class ProductGridView extends StatelessWidget {
   Widget _gridItemBody(Product product) {
     return Container(
       padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE5E6E8),
-        borderRadius: BorderRadius.circular(20),
+      decoration: const BoxDecoration(
+        color:  Color(0xFFE5E6E8),
       ),
-      child: Image.asset(product.images[0], scale: 3),
+      child: Image.asset(product.images[0], scale: 1),
     );
   }
 
@@ -61,11 +59,7 @@ class ProductGridView extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         height: 60,
         decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(15),
-            bottomRight: Radius.circular(15),
-          ),
+          color: Colors.white
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -118,19 +112,19 @@ class ProductGridView extends StatelessWidget {
       () {
         return Padding(
           padding: const EdgeInsets.only(top: 20),
-          child: controller.filteredProducts.isNotEmpty
+          child: productController.filteredProducts.isNotEmpty
               ? GridView.builder(
-                  itemCount: controller.filteredProducts.length,
+                  itemCount: productController.filteredProducts.length,
                   shrinkWrap: true,
                   physics: const ScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     childAspectRatio: 10 / 16,
-                    crossAxisCount: size.width ~/ 250,
+                    crossAxisCount: size.width ~/ 200,
                     mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
+                    crossAxisSpacing: 10
                   ),
                   itemBuilder: (_, index) {
-                    Product product = controller.filteredProducts[index];
+                    Product product = productController.filteredProducts[index];
                     return OpenContainerWrapper(
                       product: product,
                       child: GridTile(

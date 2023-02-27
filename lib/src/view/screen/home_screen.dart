@@ -2,7 +2,6 @@ import 'package:e_commerce_flutter/src/view/screen/search_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
-import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:e_commerce_flutter/core/app_data.dart';
 import 'package:e_commerce_flutter/src/view/screen/cart_screen.dart';
 import 'package:e_commerce_flutter/src/view/screen/profile_screen.dart';
@@ -20,30 +19,26 @@ class HomeScreen extends StatelessWidget {
     SearchScreen(),
     FavoriteScreen(),
     CartScreen(),
-    ProfileScreen()
+    AuthScreen()
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Obx(
-        () {
-          return BottomNavyBar(
-            itemCornerRadius: 10,
-            selectedIndex: controller.currentBottomNavItemIndex.value,
-            items: AppData.bottomNavyBarItems
-                .map(
-                  (item) => BottomNavyBarItem(
-                      icon: item.icon,
-                      title: Text(item.title),
-                      activeColor: item.activeColor,
-                      inactiveColor: item.inActiveColor),
-                )
-                .toList(),
-            onItemSelected: controller.switchBetweenBottomNavigationItems,
-          );
-        },
-      ),
+      bottomNavigationBar: Obx(() {
+        return BottomNavigationBar(
+          unselectedItemColor:Colors.grey,
+          selectedItemColor: Colors.deepOrange,
+          items: AppData.bottomNavBarItems
+              .map(
+                (item) =>
+                    BottomNavigationBarItem(icon: item.icon, label: item.title),
+              )
+              .toList(),
+          currentIndex: controller.currentBottomNavItemIndex.value,
+          onTap: controller.switchBetweenBottomNavigationItems,
+        );
+      }),
       body: Obx(() {
         return PageTransitionSwitcher(
           duration: const Duration(milliseconds: 300),

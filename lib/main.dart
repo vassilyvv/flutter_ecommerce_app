@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:e_commerce_flutter/src/view/translations.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_flutter/core/app_theme.dart';
 import 'package:e_commerce_flutter/src/view/screen/home_screen.dart';
@@ -12,6 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      locale: const Locale('en', 'US'),
+      translations: AppTranslations(),
       scrollBehavior: const MaterialScrollBehavior().copyWith(
         dragDevices: {
           PointerDeviceKind.mouse,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class BottomNavyBarItem {
+class BottomNavBarItem {
   String title;
   Icon icon;
   Color activeColor;
   Color inActiveColor;
 
-  BottomNavyBarItem(
+  BottomNavBarItem(
       this.title, this.icon, this.activeColor, this.inActiveColor);
 }

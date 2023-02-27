@@ -39,10 +39,6 @@ class ProductDetailScreen extends StatelessWidget {
       width: width,
       decoration: const BoxDecoration(
         color: Color(0xFFE5E6E8),
-        borderRadius: BorderRadius.only(
-          bottomRight: Radius.circular(200),
-          bottomLeft: Radius.circular(200),
-        ),
       ),
       child: Column(
         children: [
@@ -130,19 +126,20 @@ class ProductDetailScreen extends StatelessWidget {
     );
   }
 
-  ElevatedButton _addToCartButton(BuildContext context) {
-    return ElevatedButton(
+  MaterialButton _addToCartButton(BuildContext context) {
+    return MaterialButton(
+    color: Colors.deepOrange,
+    textColor: Colors.white,
       onPressed:
           product.isAvailable ? () => controller.addToCart(product) : null,
       child: const Text("Add to cart"),
     );
   }
 
-  ElevatedButton _goToCartButton(BuildContext context) {
-    return ElevatedButton(
-      style: TextButton.styleFrom(
-        backgroundColor: const Color.fromARGB(255, 0, 200, 0),
-      ),
+  MaterialButton _goToCartButton(BuildContext context) {
+    return MaterialButton(
+      color: Colors.green,
+      textColor: Colors.white,
       onPressed: () {
         controller.switchBetweenBottomNavigationItems(3);
         _goBack(context);

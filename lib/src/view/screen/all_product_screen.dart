@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:e_commerce_flutter/core/app_data.dart';
 import 'package:e_commerce_flutter/core/app_color.dart';
 import 'package:e_commerce_flutter/src/controller/product_controller.dart';
+import 'package:e_commerce_flutter/src/controller/catalogue_menu_controller.dart';
 import 'package:e_commerce_flutter/src/view/widget/product_grid_view.dart';
-import 'package:e_commerce_flutter/src/view/widget/list_item_selector.dart';
 
 enum AppbarActionType { leading, trailing }
 
-final ProductController controller = Get.put(ProductController());
+final ProductController productController = Get.put(ProductController());
+final CatalogueMenuController menuController =
+    Get.put(CatalogueMenuController());
 
 class AllProductScreen extends StatefulWidget {
   const AllProductScreen({Key? key}) : super(key: key);
@@ -58,16 +60,12 @@ class AllProductsScreenState extends State<AllProductScreen> {
                               ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppData
-                                      .recommendedProducts[index]
-                                      .buttonBackgroundColor,
-                                  elevation: 0,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 18),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18),
-                                  ),
-                                ),
+                                    backgroundColor: AppData
+                                        .recommendedProducts[index]
+                                        .buttonBackgroundColor,
+                                    elevation: 0,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18)),
                                 child: Text(
                                   "Get Now",
                                   style: TextStyle(
@@ -104,7 +102,17 @@ class AllProductsScreenState extends State<AllProductScreen> {
             style: Theme.of(context).textTheme.headlineMedium,
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () async {
+              menuController.selectRootMenuSection(null).then((selectedMenuSection){
+              Get.snackbar(
+                  snackPosition: SnackPosition.BOTTOM,
+                  "current menu section is",
+                  menuController
+                      .getSelectedMenuSectionForCompany(null)!
+                      .translateTo('en')['name']!,
+                  colorText: Colors.black,
+                  backgroundColor: const Color(0xFFEC6813));});
+            },
             style: TextButton.styleFrom(foregroundColor: AppColor.darkOrange),
             child: Text(
               "SEE ALL",
@@ -120,12 +128,7 @@ class AllProductsScreenState extends State<AllProductScreen> {
   }
 
   Widget _topCategoriesListView() {
-    return ListItemSelector(
-      categories: controller.categories,
-      onItemPressed: (index) {
-        controller.filterItemsByCategory(index);
-      },
-    );
+    return const Text("menu carousel");
   }
 
   @override

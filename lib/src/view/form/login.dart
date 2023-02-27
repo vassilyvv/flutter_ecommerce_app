@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 
 import '../../controller/auth_controller.dart';
@@ -11,33 +10,27 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormBuilderState>();
-    final phoneNumberFieldKey = GlobalKey<FormBuilderFieldState>();
-    final passwordFieldKey = GlobalKey<FormBuilderFieldState>();
     final phoneNumberController = TextEditingController();
     final passwordController = TextEditingController();
 
-    return FormBuilder(
-      key: formKey,
+    return Form(
       child: Column(children: [
-        FormBuilderTextField(
-          key: phoneNumberFieldKey,
-          name: 'phone',
-          decoration: const InputDecoration(labelText: 'Phone number'),
-          controller: phoneNumberController
-        ),
-        FormBuilderTextField(
-          key: passwordFieldKey,
-          name: 'text',
+        TextField(
+            decoration: InputDecoration(labelText: 'phone_number'.tr),
+            controller: phoneNumberController),
+        TextField(
           obscureText: true,
-          decoration: const InputDecoration(labelText: 'Password'),
+          decoration: InputDecoration(labelText: 'password1'.tr),
           controller: passwordController,
         ),
-        ElevatedButton(
-          child: const Text('Submit'),
+        MaterialButton(
+          color: Colors.deepOrange,
+          textColor: Colors.white,
           onPressed: () async {
-            controller.authenticate(phoneNumberController.text, passwordController.text, null);
+            controller.authenticate(
+                phoneNumberController.text, passwordController.text, null);
           },
+          child: Text('login'.tr),
         ),
       ]),
     );

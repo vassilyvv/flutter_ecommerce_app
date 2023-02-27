@@ -4,6 +4,7 @@ class AppTheme {
   const AppTheme._();
 
   static ThemeData lightAppTheme = ThemeData(
+    primaryColor: const Color(0xFFf16b26),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(12),
