@@ -141,7 +141,7 @@ class ProductDetailScreen extends StatelessWidget {
       color: Colors.green,
       textColor: Colors.white,
       onPressed: () {
-        controller.switchBetweenBottomNavigationItems(3);
+        controller.switchBetweenBottomNavigationItems(1);
         _goBack(context);
       },
       child: const Text("Go to cart"),

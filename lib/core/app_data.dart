@@ -226,18 +226,6 @@ class AppData {
       Colors.grey,
     ),
     BottomNavBarItem(
-      "Search",
-      const Icon(Icons.search),
-      const Color(0xFFEC6813),
-      Colors.grey,
-    ),
-    BottomNavBarItem(
-      "Favorite",
-      const Icon(Icons.favorite),
-      const Color(0xFFEC6813),
-      Colors.grey,
-    ),
-    BottomNavBarItem(
       "Cart",
       const Icon(Icons.shopping_cart),
       const Color(0xFFEC6813),

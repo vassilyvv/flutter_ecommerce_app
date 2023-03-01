@@ -17,20 +17,29 @@ class CatalogueMenuController extends GetxController with StateMixin {
         .firstWhereOrNull((menuSection) => menuSection.companyId == companyId);
     if (result == null) {
       result = (await APIClient()
-          .getMarketplaceRootMenuSection(marketplaceId, companyId)).menuSection;
-        menuSections.add(result);
+              .getMarketplaceRootMenuSection(marketplaceId, companyId))
+          .menuSection;
+      menuSections.add(result);
     }
     selectMenuSection(result);
     update();
     return result;
   }
-   void selectMenuSection(MenuSection menuSection) {
-    selectedMenuSections.removeWhere((selectedMenuSection) => selectedMenuSection.companyId == menuSection.companyId);
+
+  void selectMenuSection(MenuSection menuSection) {
+    selectedMenuSections.removeWhere((selectedMenuSection) =>
+        selectedMenuSection.companyId == menuSection.companyId);
     selectedMenuSections.add(menuSection);
     update();
-   }
+  }
 
-   MenuSection? getSelectedMenuSectionForCompany(String? companyId) {
-    return selectedMenuSections.firstWhereOrNull((selectedMenuSection) => selectedMenuSection.companyId == companyId);
-   }
+  MenuSection? getSelectedMenuSectionForCompany(String? companyId) {
+    return selectedMenuSections.firstWhereOrNull(
+        (selectedMenuSection) => selectedMenuSection.companyId == companyId);
+  }
+
+  @override
+  Future<void> onInit() async {
+    selectRootMenuSection(null).then((selectedMenuSection) {});
+  }
 }

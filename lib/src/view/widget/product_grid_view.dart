@@ -46,7 +46,7 @@ class ProductGridView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: const BoxDecoration(
-        color:  Color(0xFFE5E6E8),
+        color: Color(0xFFE5E6E8),
       ),
       child: Image.asset(product.images[0], scale: 1),
     );
@@ -58,9 +58,7 @@ class ProductGridView extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         height: 60,
-        decoration: const BoxDecoration(
-          color: Colors.white
-        ),
+        decoration: const BoxDecoration(color: Colors.white),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,19 +108,17 @@ class ProductGridView extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Obx(
       () {
-        return Padding(
-          padding: const EdgeInsets.only(top: 20),
-          child: productController.filteredProducts.isNotEmpty
+        return productController.filteredProducts.isNotEmpty
               ? GridView.builder(
+                  padding: const EdgeInsets.all(0),
                   itemCount: productController.filteredProducts.length,
                   shrinkWrap: true,
                   physics: const ScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 10 / 16,
-                    crossAxisCount: size.width ~/ 200,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10
-                  ),
+                      childAspectRatio: 10 / 16,
+                      crossAxisCount: size.width ~/ 200,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10),
                   itemBuilder: (_, index) {
                     Product product = productController.filteredProducts[index];
                     return OpenContainerWrapper(
@@ -135,8 +131,7 @@ class ProductGridView extends StatelessWidget {
                     );
                   },
                 )
-              : Text('no elements'),
-        );
+              : const Text('no elements');
       },
     );
   }
