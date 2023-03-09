@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
-import 'package:e_commerce_flutter/src/model/product.dart';
-import 'package:e_commerce_flutter/src/view/screen/product_detail_screen.dart';
+
+import '../../model/catalogue/menu_section_entry.dart';
+import '../screen/menu_section_entry_detail_screen.dart';
 
 class OpenContainerWrapper extends StatelessWidget {
   const OpenContainerWrapper({
     Key? key,
     required this.child,
-    required this.product,
+    required this.menuSectionEntry,
   }) : super(key: key);
 
   final Widget child;
-  final Product product;
+  final MenuSectionEntry menuSectionEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class OpenContainerWrapper extends StatelessWidget {
       closedBuilder: (_, VoidCallback openContainer) {
         return InkWell(onTap: openContainer, child: child);
       },
-      openBuilder: (_, __) => ProductDetailScreen(product),
+      openBuilder: (_, __) => MenuSectionEntryDetailScreen(menuSectionEntry: menuSectionEntry),
     );
   }
 }

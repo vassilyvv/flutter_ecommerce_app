@@ -3,19 +3,20 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart' as getx;
 
 import '../controller/auth_controller.dart';
-import '../model/company.dart';
-import '../model/marketplace.dart';
-import '../model/menu_section.dart';
-import '../model/order.dart';
-import '../model/node.dart';
-import '../model/order_entry.dart';
-import '../model/stage_achievement.dart';
-import '../model/transaction.dart';
-import '../model/transaction_entry.dart';
+import '../model/auth/user.dart';
+import '../model/catalogue/menu_section_entries_list_entry.dart';
+import '../model/catalogue/menu_section_entry.dart';
+import '../model/company/company.dart';
+import '../model/catalogue/menu_section.dart';
+import '../model/trade/order.dart';
+import '../model/logistics/node.dart';
+import '../model/trade/order_entry.dart';
+import '../model/logistics/transaction.dart';
+import '../model/logistics/transaction_entry.dart';
 
 final AuthController controller = getx.Get.put(AuthController());
-const apiBaseUrl = String.fromEnvironment('apiBaseUrl',
-    defaultValue: 'https://api.very.supply');
+const apiBaseUrl =
+    String.fromEnvironment('apiBaseUrl', defaultValue: 'http://localhost:8000');
 
 class GenericResponse {
   late int statusCode;
@@ -131,64 +132,21 @@ class UpdatePasswordResponse extends GenericResponse {
 }
 
 class UserDataResponse extends GenericResponse {
-  late int id;
-  late String firstName;
-  late String lastName;
-  late String? email;
-  late bool? isEmailConfirmed;
-  late String? emailCandidate;
-  late String? phoneNumber;
-  late bool? isPhoneNumberConfirmed;
-  late String? phoneNumberCandidate;
-  late bool? isMFAEnabled;
+  late User? user;
   String? validationError;
 
-  UserDataResponse(statusCode,
-      this.id,
-      this.email,
-      this.isEmailConfirmed,
-      this.phoneNumber,
-      this.emailCandidate,
-      this.isMFAEnabled,
-      this.isPhoneNumberConfirmed,
-      this.phoneNumberCandidate,
-      this.validationError,
-      this.firstName,
-      this.lastName)
+  UserDataResponse(
+      statusCode,
+      this.user)
       : super(statusCode);
 
   UserDataResponse.fromResponse(Response response)
       : super.fromResponse(response) {
     if (response.statusCode! < 300) {
-      id = response.data["id"];
-      email = response.data['email'];
-      firstName = response.data['first_name'];
-      lastName = response.data['last_name'];
-      isEmailConfirmed = response.data['is_email_confirmed'];
-      emailCandidate = response.data['email_candidate'];
-      phoneNumber = response.data['phone_number'];
-      isPhoneNumberConfirmed = response.data['is_phone_number_confirmed'];
-      phoneNumberCandidate = response.data['phone_number_candidate'];
-      isMFAEnabled = response.data['is_mfa_enabled'];
+      user = User.fromJson(response.data);
     } else {
       validationError = response.toString();
     }
-  }
-}
-
-class MarketplacesListResponse extends GenericResponse {
-  List<Marketplace> marketplaces = [];
-
-  MarketplacesListResponse(statusCode, this.marketplaces) : super(statusCode);
-
-  MarketplacesListResponse.fromResponse(Response response)
-      : super.fromResponse(response) {
-    List<Marketplace> marketplaces = [];
-    if (response.statusCode == 200) {
-      response.data
-          .forEach((entry) => marketplaces.add(Marketplace.fromJson(entry)));
-    }
-    this.marketplaces = marketplaces;
   }
 }
 
@@ -207,6 +165,23 @@ class NodesListResponse extends GenericResponse {
   }
 }
 
+class MenuSectionEntriesResponse extends GenericResponse {
+  List<MenuSectionEntry> menuSectionEntries = [];
+
+  MenuSectionEntriesResponse(statusCode, this.menuSectionEntries)
+      : super(statusCode);
+
+  MenuSectionEntriesResponse.fromResponse(Response response)
+      : super.fromResponse(response) {
+    List<MenuSectionEntry> menuSectionEntries = [];
+    if (response.statusCode == 200) {
+      response.data['results'].forEach(
+          (entry) => menuSectionEntries.add(MenuSectionEntry.fromJson(entry)));
+    }
+    this.menuSectionEntries = menuSectionEntries;
+  }
+}
+
 class OrdersListResponse extends GenericResponse {
   List<Order> orders = [];
 
@@ -222,6 +197,38 @@ class OrdersListResponse extends GenericResponse {
   }
 }
 
+class AddMenuSectionEntryToFavoritesResponse extends GenericResponse {
+  MenuSectionEntriesListEntry? menuSectionEntriesListEntry;
+  Map<String, dynamic>? validationError;
+
+  AddMenuSectionEntryToFavoritesResponse(statusCode, this.menuSectionEntriesListEntry, this.validationError)
+      : super(statusCode);
+
+  AddMenuSectionEntryToFavoritesResponse.fromResponse(Response response)
+      : super.fromResponse(response) {
+    if (response.statusCode == 201) {
+      menuSectionEntriesListEntry = MenuSectionEntriesListEntry.fromJson(response.data);
+    } else {
+      validationError = response.data;
+    }
+  }
+}
+class RemoveMenuSectionEntryFromFavoritesResponse extends GenericResponse {
+  MenuSectionEntriesListEntry? menuSectionEntriesListEntry;
+  Map<String, dynamic>? validationError;
+
+  RemoveMenuSectionEntryFromFavoritesResponse(statusCode, this.menuSectionEntriesListEntry, this.validationError)
+      : super(statusCode);
+
+  RemoveMenuSectionEntryFromFavoritesResponse.fromResponse(Response response)
+      : super.fromResponse(response) {
+    if (response.statusCode == 201) {
+      menuSectionEntriesListEntry = MenuSectionEntriesListEntry.fromJson(response.data);
+    } else {
+      validationError = response.data;
+    }
+  }
+}
 class OrderCreateResponse extends GenericResponse {
   Order? order;
   Map<String, dynamic>? validationError;
@@ -265,26 +272,6 @@ class CompanyResponse extends GenericResponse {
       : super.fromResponse(response) {
     if (response.statusCode == 200) {
       company = Company.fromJson(response.data);
-    }
-  }
-}
-
-class StageAchievementsResponse extends GenericResponse {
-  List<StageAchievement>? stageAchievements;
-  Map<String, dynamic>? validationError;
-
-  StageAchievementsResponse(statusCode, this.stageAchievements,
-      this.validationError)
-      : super(statusCode);
-
-  StageAchievementsResponse.fromResponse(Response response)
-      : super.fromResponse(response) {
-    if (response.statusCode == 200) {
-      stageAchievements = (response.data as List<dynamic>)
-          .map((offer) => StageAchievement.fromJson(offer))
-          .toList();
-    } else {
-      validationError = response.data;
     }
   }
 }
@@ -338,23 +325,6 @@ class MenuSectionResponse extends GenericResponse {
   }
 }
 
-class MarketplaceResponse extends GenericResponse {
-  Marketplace? marketplace;
-  String? validationError;
-
-  MarketplaceResponse(statusCode, this.marketplace, this.validationError)
-      : super(statusCode);
-
-  MarketplaceResponse.fromResponse(Response response)
-      : super.fromResponse(response) {
-    if (response.statusCode == 200) {
-      marketplace = Marketplace.fromJson(response.data);
-    } else {
-      validationError = response.data.values[0];
-    }
-  }
-}
-
 class APIClient {
   static final APIClient _singleton = APIClient._internal();
 
@@ -375,8 +345,8 @@ class APIClient {
         options: Options(validateStatus: (status) => status! < 500)));
   }
 
-  Future<LoginResponse> authenticate(String phoneNumber, String password,
-      String? otp) async {
+  Future<LoginResponse> authenticate(
+      String phoneNumber, String password, String? otp) async {
     Response response = await _dio.post(
       "$apiBaseUrl/moses/token/obtain/",
       data: {
@@ -397,11 +367,13 @@ class APIClient {
     return OtpStatusResponse.fromResponse(response);
   }
 
-  Future<RegisterResponse> register(String firstName,
-      String lastName,
-      String phoneNumber,
-      String email,
-      String password,) async {
+  Future<RegisterResponse> register(
+    String firstName,
+    String lastName,
+    String phoneNumber,
+    String email,
+    String password,
+  ) async {
     Response response = await _dio.post(
       "$apiBaseUrl/moses/users/",
       data: {
@@ -416,12 +388,12 @@ class APIClient {
     return RegisterResponse.fromResponse(response);
   }
 
-  Future<PasswordResetResponse> resetPassword(String? phoneNumber,
-      String? email) async {
+  Future<PasswordResetResponse> resetPassword(
+      String? phoneNumber, String? email) async {
     Response response = await _dio.post(
       "$apiBaseUrl/moses/password/reset/",
       data:
-      email == null ? {'phone_number.dart': phoneNumber} : {'email': email},
+          email == null ? {'phone_number.dart': phoneNumber} : {'email': email},
       options: Options(validateStatus: (status) => status! < 500),
     );
     return PasswordResetResponse.fromResponse(response);
@@ -436,19 +408,18 @@ class APIClient {
     ));
   }
 
-  Future<UserDataResponse?> getProfileByPhoneOrEmail(String accessToken,
-      String value) async {
+  Future<UserDataResponse?> getProfileByPhoneOrEmail(
+      String accessToken, String value) async {
     return UserDataResponse.fromResponse(await _dio.get(
-      "$apiBaseUrl/moses/get_by_phone_or_email/?value=${Uri.encodeComponent(
-          value)}",
+      "$apiBaseUrl/moses/get_by_phone_or_email/?value=${Uri.encodeComponent(value)}",
       options: Options(
           validateStatus: (status) => status! < 500,
           headers: {'Authorization': 'Bearer $accessToken'}),
     ));
   }
 
-  Future<UserDataResponse?> updateProfile(String accessToken,
-      String phoneNumber, String email) async {
+  Future<UserDataResponse?> updateProfile(
+      String accessToken, String phoneNumber, String email) async {
     return UserDataResponse.fromResponse(await _dio.patch(
       "$apiBaseUrl/moses/users/me/",
       data: {"phone_number.dart": phoneNumber, "email": email},
@@ -458,8 +429,8 @@ class APIClient {
     ));
   }
 
-  Future<ConfirmEmailResponse?> confirmEmail(String accessToken,
-      String emailPin, String emailCandidatePin) async {
+  Future<ConfirmEmailResponse?> confirmEmail(
+      String accessToken, String emailPin, String emailCandidatePin) async {
     return ConfirmEmailResponse.fromResponse(await _dio.post(
       "$apiBaseUrl/moses/confirm_email/",
       data: {"pin": emailPin, "candidate_pin": emailCandidatePin},
@@ -469,8 +440,28 @@ class APIClient {
     ));
   }
 
-  Future<ConfirmPhoneNumberResponse?> confirmPhoneNumber(String accessToken,
-      String emailPin, String emailCandidatePin) async {
+  Future<AddMenuSectionEntryToFavoritesResponse> addMenuSectionEntryToFavorites(
+      String accessToken, MenuSectionEntry menuSectionEntry) async {
+    return AddMenuSectionEntryToFavoritesResponse.fromResponse(await _dio.post(
+      "$apiBaseUrl/catalogue/menusectionentrieslistentry/",
+      data: {"menu_section_entry_id": menuSectionEntry.id, "menu_section_entries_list": "00000000-0000-0000-0000-000000000001"},
+      options: Options(
+          validateStatus: (status) => status! < 500,
+          headers: {'Authorization': 'Bearer $accessToken'}),
+    ));
+  }
+  Future<RemoveMenuSectionEntryFromFavoritesResponse?> removeFavoritesEntry(
+      String accessToken, MenuSectionEntriesListEntry menuSectionEntriesListEntry) async {
+    return RemoveMenuSectionEntryFromFavoritesResponse.fromResponse(await _dio.delete(
+      "$apiBaseUrl/catalogue/menusectionentrieslistentry/${menuSectionEntriesListEntry.id}",
+      options: Options(
+          validateStatus: (status) => status! < 500,
+          headers: {'Authorization': 'Bearer $accessToken'}),
+    ));
+  }
+
+  Future<ConfirmPhoneNumberResponse?> confirmPhoneNumber(
+      String accessToken, String emailPin, String emailCandidatePin) async {
     return ConfirmPhoneNumberResponse.fromResponse(await _dio.post(
       "$apiBaseUrl/moses/confirm_phone_number/",
       data: {"pin": emailPin, "candidate_pin": emailCandidatePin},
@@ -480,8 +471,8 @@ class APIClient {
     ));
   }
 
-  Future<UpdatePasswordResponse?> updatePassword(String accessToken,
-      String oldPassword, String newPassword) async {
+  Future<UpdatePasswordResponse?> updatePassword(
+      String accessToken, String oldPassword, String newPassword) async {
     return UpdatePasswordResponse.fromResponse(await _dio.post(
       "$apiBaseUrl/moses/password/",
       data: {"current_password": oldPassword, "new_password": newPassword},
@@ -491,8 +482,8 @@ class APIClient {
     ));
   }
 
-  Future<MFASwitchResponse?> setMFAEnabled(String accessToken, String action,
-      String? secretKey, String? otp) async {
+  Future<MFASwitchResponse?> setMFAEnabled(
+      String accessToken, String action, String? secretKey, String? otp) async {
     return MFASwitchResponse.fromResponse(await _dio.post(
       "$apiBaseUrl/moses/mfa/",
       data: {"action": action, "mfa_secret_key": secretKey},
@@ -514,31 +505,16 @@ class APIClient {
     ));
   }
 
-  Future<MarketplacesListResponse?> getMarketplaces(String accessToken) async {
-    return MarketplacesListResponse.fromResponse(await _dio.get(
-      "$apiBaseUrl/catalogue/marketplace/",
-    ));
-  }
-
-  Future<MarketplaceResponse?> getMarketplace({required String accessToken,
-    required String companyId,
-    required String marketplaceId}) async {
-    return MarketplaceResponse.fromResponse(await _dio.get(
-      "$apiBaseUrl/catalogue/marketplace/$marketplaceId/?company=$companyId",
-      options: Options(
-          validateStatus: (status) => status! < 500,
-          headers: {'Authorization': 'Bearer $accessToken'}),
-    ));
-  }
-
   Future<MenuSectionResponse> getMarketplaceRootMenuSection(
       String marketplaceId, String? companyId) async {
-    String url = "$apiBaseUrl/catalogue/menusection/for_marketplace/?marketplace=$marketplaceId";
+    String url =
+        "$apiBaseUrl/catalogue/menusection/for_marketplace/?marketplace=$marketplaceId";
     if (companyId != null) {
       url += "&company=$companyId";
     }
-    return MenuSectionResponse.fromResponse(await _dio.get(url,options: Options(
-        validateStatus: (status) => status! < 500),
+    return MenuSectionResponse.fromResponse(await _dio.get(
+      url,
+      options: Options(validateStatus: (status) => status! < 500),
     ));
   }
 
@@ -568,8 +544,8 @@ class APIClient {
     ));
   }
 
-  Future<TransactionsResponse?> getTransactions(String accessToken,
-      int companyId) async {
+  Future<TransactionsResponse?> getTransactions(
+      String accessToken, int companyId) async {
     return TransactionsResponse.fromResponse(await _dio.get(
       "$apiBaseUrl/logistics/transaction/",
       options: Options(
@@ -613,23 +589,41 @@ class APIClient {
     ));
   }
 
-  Future<StageAchievementsResponse?> getStageAchievements(String accessToken,
-      int companyId,) async {
-    return StageAchievementsResponse.fromResponse(await _dio.get(
-      "$apiBaseUrl/logistics/stageachievement/?company=$companyId",
-      options: Options(
-        validateStatus: (status) => status! < 500,
-        headers: {'Authorization': 'Bearer $accessToken'},
-      ),
-    ));
-  }
-
   Future<NodesListResponse?> getNodes(String accessToken) async {
     return NodesListResponse.fromResponse(await _dio.get(
       "$apiBaseUrl/logistics/transactionnode/",
       options: Options(
           validateStatus: (status) => status! < 500,
           headers: {'Authorization': 'Bearer $accessToken'}),
+    ));
+  }
+
+  Future<MenuSectionEntriesResponse> getMenuSectionEntries(
+      String? accessToken,
+      String? menuSectionEntriesListId,
+      String? menuSectionId,
+      String? searchQuery) async {
+    Map<String, String> queryParams = {};
+    if (menuSectionEntriesListId != null) {
+      queryParams['menu_section_entries_list'] = menuSectionEntriesListId;
+    }
+    if (menuSectionId != null) {
+      queryParams['menu_section'] = menuSectionId;
+    }
+    if (searchQuery != null) {
+      queryParams['q'] = searchQuery;
+    }
+    Map<String, String> headers = {};
+    if (accessToken != null) {
+      headers['Authorization'] = 'Bearer $accessToken';
+    }
+    String queryParamsString = queryParams.entries
+        .map((entry) => "${entry.key}=${entry.value}")
+        .join("&");
+    return MenuSectionEntriesResponse.fromResponse(await _dio.get(
+      "$apiBaseUrl/catalogue/menusectionentry/?$queryParamsString",
+      options:
+          Options(validateStatus: (status) => status! < 500, headers: headers),
     ));
   }
 }

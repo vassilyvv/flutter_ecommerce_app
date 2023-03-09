@@ -1,13 +1,16 @@
+import 'package:e_commerce_flutter/src/controller/catalogue_filter_controller.dart';
+import 'package:e_commerce_flutter/src/controller/nav_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
-import 'package:e_commerce_flutter/core/app_data.dart';
 import 'package:e_commerce_flutter/src/view/screen/cart_screen.dart';
 import 'package:e_commerce_flutter/src/view/screen/profile_screen.dart';
-import 'package:e_commerce_flutter/src/controller/product_controller.dart';
 import 'package:e_commerce_flutter/src/view/screen/all_product_screen.dart';
 
-final ProductController controller = Get.put(ProductController());
+import '../../../core/app_data.dart';
+
+final NavController navController = Get.put(NavController());
+final CatalogueFilterController catalogueFilterController = Get.put(CatalogueFilterController());
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -33,8 +36,8 @@ class HomeScreen extends StatelessWidget {
                     BottomNavigationBarItem(icon: item.icon, label: item.title),
               )
               .toList(),
-          currentIndex: controller.currentBottomNavItemIndex.value,
-          onTap: controller.switchBetweenBottomNavigationItems,
+          currentIndex: navController.currentBottomNavItemIndex.value,
+          onTap: navController.switchBetweenBottomNavigationItems,
         );
       }),
       body: Obx(() {
@@ -51,7 +54,7 @@ class HomeScreen extends StatelessWidget {
               child: child,
             );
           },
-          child: screens[controller.currentBottomNavItemIndex.value],
+          child: screens[navController.currentBottomNavItemIndex.value],
         );
       }),
     );

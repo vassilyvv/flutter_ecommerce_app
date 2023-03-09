@@ -1,11 +1,12 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:e_commerce_flutter/core/extensions.dart';
 import 'package:e_commerce_flutter/src/view/widget/empty_cart.dart';
-import 'package:e_commerce_flutter/src/controller/product_controller.dart';
 import 'package:e_commerce_flutter/src/view/animation/animated_switcher_wrapper.dart';
 
-final ProductController controller = Get.put(ProductController());
+import '../../controller/cart_controller.dart';
+
+
+final CartController cartController = Get.put(CartController());
 
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class CartScreen extends StatelessWidget {
   Widget cartList() {
     return SingleChildScrollView(
         child: Column(
-            children: controller.cartProducts.mapWithIndex((index, product) {
+            children: cartController.cart.entries.map((cartEntry) {
       return Container(
         width: double.infinity,
         margin: const EdgeInsets.all(15),
@@ -41,7 +42,7 @@ class CartScreen extends StatelessWidget {
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: ColorExtension.randomColor,
+                color: Colors.white70,
               ),
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
@@ -50,7 +51,7 @@ class CartScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(5),
                     child: Image.asset(
-                      product.images[0],
+                      cartEntry.key.images[0],
                       width: 100,
                       height: 90,
                     ),
@@ -62,7 +63,8 @@ class CartScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  product.name.nextLine,
+                  cartEntry.key.outcomeTransactionTemplate.entries[0].asset
+                      .translations['en']!['name']!,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -71,23 +73,23 @@ class CartScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 5),
-                Text(
-                  controller.getCurrentSize(product),
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(0.5),
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  controller.isPriceOff(product)
-                      ? "\$${product.off}"
-                      : "\$${product.price}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 23,
-                  ),
-                ),
+                // Text(
+                //   cartController.getCurrentSize(product),
+                //   style: TextStyle(
+                //     color: Colors.black.withOpacity(0.5),
+                //     fontWeight: FontWeight.w400,
+                //   ),
+                // ),
+                // const SizedBox(height: 5),
+                // Text(
+                //   cartController.isPriceOff(product)
+                //       ? "\$${product.off}"
+                //       : "\$${product.price}",
+                //   style: const TextStyle(
+                //     fontWeight: FontWeight.w900,
+                //     fontSize: 23,
+                //   ),
+                // ),
               ],
             ),
             Container(
@@ -101,7 +103,7 @@ class CartScreen extends StatelessWidget {
                     children: [
                       IconButton(
                         splashRadius: 10.0,
-                        onPressed: () => controller.decreaseItem(index),
+                        onPressed: () => cartController.decreaseItem(cartEntry.key),
                         icon: const Icon(
                           Icons.remove,
                           color: Color(0xFFEC6813),
@@ -109,9 +111,9 @@ class CartScreen extends StatelessWidget {
                       ),
                       AnimatedSwitcherWrapper(
                         child: Text(
-                          '${controller.cartProducts[index].quantity}',
+                          '${cartEntry.value}',
                           key: ValueKey<int>(
-                            controller.cartProducts[index].quantity,
+                            cartEntry.value,
                           ),
                           style: const TextStyle(
                             fontSize: 18,
@@ -121,7 +123,7 @@ class CartScreen extends StatelessWidget {
                       ),
                       IconButton(
                         splashRadius: 10.0,
-                        onPressed: () => controller.increaseItem(index),
+                        onPressed: () => cartController.increaseItem(cartEntry.key),
                         icon: const Icon(Icons.add, color: Color(0xFFEC6813)),
                       ),
                     ])),
@@ -132,7 +134,7 @@ class CartScreen extends StatelessWidget {
                 ),
                 child: IconButton(
                   splashRadius: 10.0,
-                  onPressed: () => controller.removeItemFromCart(index),
+                  onPressed: () => cartController.removeItemFromCart(cartEntry.key),
                   icon: const Icon(Icons.clear, color: Colors.red),
                 ))
           ],
@@ -156,8 +158,8 @@ class CartScreen extends StatelessWidget {
             () {
               return AnimatedSwitcherWrapper(
                 child: Text(
-                  "\$${controller.totalPrice.value}",
-                  key: ValueKey<int>(controller.totalPrice.value),
+                  "\$${cartController.totalPrice}",
+                  key: ValueKey<int>(cartController.totalPrice.values.toList()[0]),
                   style: const TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.w900,
@@ -179,7 +181,7 @@ class CartScreen extends StatelessWidget {
         padding: const EdgeInsets.only(left: 30, right: 30, bottom: 20),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(20)),
-          onPressed: controller.isEmptyCart ? null : () {},
+          onPressed: cartController.cart.isEmpty ? null : () {},
           child: const Text("Buy Now"),
         ),
       ),
@@ -195,7 +197,7 @@ class CartScreen extends StatelessWidget {
             children: [
               Expanded(
                   child:
-                      controller.isEmptyCart ? const EmptyCart() : cartList()),
+                      cartController.cart.isEmpty ? const EmptyCart() : cartList()),
               bottomBarTitle(),
               bottomBarButton()
             ],

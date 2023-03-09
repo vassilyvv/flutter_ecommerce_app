@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
-import '../model/user.dart';
+import '../model/auth/user.dart';
 
 final apiClient = APIClient();
 
@@ -48,20 +48,7 @@ class AuthController extends GetxController {
     if (loginResponse.statusCode == 200) {
       UserDataResponse authenticatedUserDataResponse =
           await apiClient.getAuthenticatedUserData(loginResponse.accessToken!);
-      authenticatedUser.value = User(
-        authenticatedUserDataResponse.email,
-        authenticatedUserDataResponse.phoneNumber,
-        authenticatedUserDataResponse.firstName,
-        authenticatedUserDataResponse.lastName,
-        loginResponse.accessToken,
-        loginResponse.refreshToken,
-        authenticatedUserDataResponse.id,
-        authenticatedUserDataResponse.isEmailConfirmed,
-        authenticatedUserDataResponse.emailCandidate,
-        authenticatedUserDataResponse.isPhoneNumberConfirmed,
-        authenticatedUserDataResponse.phoneNumberCandidate,
-        authenticatedUserDataResponse.isMFAEnabled,
-      );
+      authenticatedUser.value = authenticatedUserDataResponse.user;
     } else {
       Get.snackbar(
           snackPosition: SnackPosition.BOTTOM,

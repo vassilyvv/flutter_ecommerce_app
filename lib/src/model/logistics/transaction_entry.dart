@@ -1,22 +1,13 @@
-class TransactionEntry {
-  String? id;
-  int? asset;
-  int? amount;
+import '../base_model.dart';
+import '../catalogue/asset.dart';
 
-  TransactionEntry({required this.asset, required this.amount});
+class TransactionEntry extends BaseModel {
+  late Asset asset;
+  late int amount;
 
-  TransactionEntry.fromJson(json) {
-    id = json['id'];
-    asset = json['asset'];
+  TransactionEntry.fromJson(json) : super.fromJson(json) {
+    asset = Asset.fromJson(json['asset']);
     amount = json["amount"];
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'asset': asset,
-      'amount': amount,
-    };
   }
 
   @override

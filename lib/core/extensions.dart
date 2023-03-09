@@ -1,15 +1,3 @@
-import 'package:e_commerce_flutter/core/app_data.dart';
-import 'package:flutter/material.dart';
-import 'dart:math';
-
-extension ColorExtension on Color {
-  static Color get randomColor {
-    Random random = Random();
-    int randNumber = random.nextInt(AppData.randomColors.length);
-    return AppData.randomColors[randNumber];
-  }
-}
-
 extension IterableExtension<T> on Iterable<T> {
   Iterable<T> distinctBy(Object Function(T e) getCompareValue) {
     var result = <T>[];

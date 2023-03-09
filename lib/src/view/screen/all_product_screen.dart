@@ -1,19 +1,14 @@
+import 'package:e_commerce_flutter/src/controller/catalogue_filter_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:e_commerce_flutter/core/app_data.dart';
-import 'package:e_commerce_flutter/src/controller/product_controller.dart';
-import 'package:e_commerce_flutter/src/controller/catalogue_menu_controller.dart';
-
-import '../../model/menu_section.dart';
-import '../../model/product.dart';
-import '../widget/product_grid_view.dart';
-import 'dart:math';
+import '../../model/catalogue/menu_section.dart';
+import '../../model/catalogue/menu_section_entry.dart';
+import '../widget/menu_section_entry_grid_view.dart';
 
 enum AppbarActionType { leading, trailing }
 
-final ProductController productController = Get.put(ProductController());
-final CatalogueMenuController menuController =
-    Get.put(CatalogueMenuController());
+final CatalogueFilterController catalogueFilterController =
+    Get.put(CatalogueFilterController());
 
 class PersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   Widget widget;
@@ -53,14 +48,14 @@ class AllProductScreen extends StatefulWidget {
 }
 
 class AllProductsScreenState extends State<AllProductScreen> {
-  Widget _gridItemHeader(Product product, int index) {
+  Widget _gridItemHeader(MenuSectionEntry menuSectionEntry, int index) {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Visibility(
-            visible: productController.isPriceOff(product),
+            visible: true,
             child: Container(
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -77,28 +72,28 @@ class AllProductsScreenState extends State<AllProductScreen> {
           IconButton(
             icon: Icon(
               Icons.favorite,
-              color: productController.filteredProducts[index].isLiked
+              color: catalogueFilterController.filteredMenuSectionEntries[index].favoriteEntry != null
                   ? Colors.redAccent
                   : const Color(0xFFA6A3A0),
             ),
-            onPressed: () => productController.isLiked(index),
+            onPressed: () => catalogueFilterController.addMenuSectionEntryToFavorites(menuSectionEntry),
           ),
         ],
       ),
     );
   }
 
-  Widget _gridItemBody(Product product) {
+  Widget _gridItemBody(MenuSectionEntry menuSectionEntry) {
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: const BoxDecoration(
         color: Color(0xFFE5E6E8),
       ),
-      child: Image.asset(product.images[0], scale: 1),
+      child: Image.asset(menuSectionEntry.images[0], scale: 1),
     );
   }
 
-  Widget _gridItemFooter(Product product, BuildContext context) {
+  Widget _gridItemFooter(MenuSectionEntry menuSectionEntry, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -111,7 +106,7 @@ class AllProductsScreenState extends State<AllProductScreen> {
           children: [
             FittedBox(
               child: Text(
-                product.name,
+                menuSectionEntry.offers[0].outcomeTransactionTemplate.entries[0].asset.translations['en']!['name']!,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: const TextStyle(
@@ -124,23 +119,21 @@ class AllProductsScreenState extends State<AllProductScreen> {
             Row(
               children: [
                 Text(
-                  product.off != null
-                      ? "\$${product.off}"
-                      : "\$${product.price}",
+                  menuSectionEntry.offers[0].prices,
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
-                const SizedBox(width: 3),
-                Visibility(
-                  visible: product.off != null ? true : false,
-                  child: Text(
-                    "\$${product.price}",
-                    style: const TextStyle(
-                      decoration: TextDecoration.lineThrough,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                )
+                // const SizedBox(width: 3),
+                // Visibility(
+                //   visible: product.off != null ? true : false,
+                //   child: Text(
+                //     "\$${product.price}",
+                //     style: const TextStyle(
+                //       decoration: TextDecoration.lineThrough,
+                //       color: Colors.grey,
+                //       fontWeight: FontWeight.w500,
+                //     ),
+                //   ),
+                // )
               ],
             )
           ],
@@ -148,75 +141,75 @@ class AllProductsScreenState extends State<AllProductScreen> {
       ),
     );
   }
-
-  Widget _recommendedProductListView(BuildContext context) {
-    return SizedBox(
-      height: 170,
-      child: ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: AppData.recommendedProducts.length,
-          itemBuilder: (_, index) {
-            return Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: Container(
-                width: 300,
-                decoration: BoxDecoration(
-                  color: AppData.recommendedProducts[index].cardBackgroundColor,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: SizedBox(
-                          width: 130,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '30% OFF DURING \nCOVID 19',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displaySmall
-                                    ?.copyWith(color: Colors.white),
-                              ),
-                              const SizedBox(height: 8),
-                              ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppData
-                                        .recommendedProducts[index]
-                                        .buttonBackgroundColor,
-                                    elevation: 0,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 18)),
-                                child: Text(
-                                  "Get Now",
-                                  style: TextStyle(
-                                    color: AppData.recommendedProducts[index]
-                                        .buttonTextColor!,
-                                  ),
-                                ),
-                              )
-                            ],
-                          )),
-                    ),
-                    const Spacer(),
-                    Image.asset(
-                      'assets/images/shopping.png',
-                      height: 125,
-                      fit: BoxFit.cover,
-                    )
-                  ],
-                ),
-              ),
-            );
-          }),
-    );
-  }
+  //
+  // Widget _recommendedProductListView(BuildContext context) {
+  //   return SizedBox(
+  //     height: 170,
+  //     child: ListView.builder(
+  //         padding: const EdgeInsets.symmetric(vertical: 10),
+  //         shrinkWrap: true,
+  //         scrollDirection: Axis.horizontal,
+  //         itemCount: AppData.recommendedProducts.length,
+  //         itemBuilder: (_, index) {
+  //           return Padding(
+  //             padding: const EdgeInsets.only(right: 20),
+  //             child: Container(
+  //               width: 300,
+  //               decoration: BoxDecoration(
+  //                 color: AppData.recommendedProducts[index].cardBackgroundColor,
+  //                 borderRadius: BorderRadius.circular(15),
+  //               ),
+  //               child: Row(
+  //                 children: [
+  //                   Padding(
+  //                     padding: const EdgeInsets.only(left: 20),
+  //                     child: SizedBox(
+  //                         width: 130,
+  //                         child: Column(
+  //                           crossAxisAlignment: CrossAxisAlignment.start,
+  //                           mainAxisAlignment: MainAxisAlignment.center,
+  //                           children: [
+  //                             Text(
+  //                               '30% OFF DURING \nCOVID 19',
+  //                               style: Theme.of(context)
+  //                                   .textTheme
+  //                                   .displaySmall
+  //                                   ?.copyWith(color: Colors.white),
+  //                             ),
+  //                             const SizedBox(height: 8),
+  //                             ElevatedButton(
+  //                               onPressed: () {},
+  //                               style: ElevatedButton.styleFrom(
+  //                                   backgroundColor: AppData
+  //                                       .recommendedProducts[index]
+  //                                       .buttonBackgroundColor,
+  //                                   elevation: 0,
+  //                                   padding: const EdgeInsets.symmetric(
+  //                                       horizontal: 18)),
+  //                               child: Text(
+  //                                 "Get Now",
+  //                                 style: TextStyle(
+  //                                   color: AppData.recommendedProducts[index]
+  //                                       .buttonTextColor!,
+  //                                 ),
+  //                               ),
+  //                             )
+  //                           ],
+  //                         )),
+  //                   ),
+  //                   const Spacer(),
+  //                   Image.asset(
+  //                     'assets/images/shopping.png',
+  //                     height: 125,
+  //                     fit: BoxFit.cover,
+  //                   )
+  //                 ],
+  //               ),
+  //             ),
+  //           );
+  //         }),
+  //   );
+  // }
 
   Widget _menuItem(MenuSection menuSection) {
     return ElevatedButton(
@@ -226,15 +219,19 @@ class AllProductsScreenState extends State<AllProductScreen> {
                     borderRadius: BorderRadius.zero,
                     side: BorderSide(color: Colors.red)))),
         onPressed: () {
-          menuController.selectMenuSection(menuSection);
+          catalogueFilterController.selectMenuSection(menuSection);
         },
-        child: Text(menuSection.translateTo('en')['name']!));
+        child: Text(menuSection.translations['en']!['name']!));
   }
 
   Widget _menu() {
     return Obx(() {
+      MenuSection? selectedMenuSection = catalogueFilterController.selectedMenuSection.value;
+      if (selectedMenuSection == null) {
+        return Text("No menu");
+      }
       List<MenuSection>? children =
-          menuController.getSelectedMenuSectionForCompany(null)?.children;
+          selectedMenuSection.children;
       children ??= [];
       return Container(
           color: Colors.white,
@@ -265,7 +262,7 @@ class AllProductsScreenState extends State<AllProductScreen> {
           pinned: true,
           delegate: PersistentHeaderDelegate(
               fadeOutOnScroll: false, widget: Column(children: [_menu()]))),
-      const SliverToBoxAdapter(child: ProductGridView())
+      const SliverToBoxAdapter(child: MenuSectionEntriesGridView())
     ])));
   }
 }

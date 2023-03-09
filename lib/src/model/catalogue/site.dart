@@ -1,12 +1,12 @@
 import 'package:collection/collection.dart';
 
-class Site {
-  int? id;
+import '../base_model.dart';
+
+class Site extends BaseModel {
   String? domain;
   String? name;
 
-  Site.fromJson(json) {
-    id = json['id'];
+  Site.fromJson(json) : super.fromJson(json) {
     domain = json['domain'];
     name = json['name'];
   }
