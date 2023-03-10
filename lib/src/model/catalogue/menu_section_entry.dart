@@ -20,6 +20,17 @@ class MenuSectionEntry extends BaseModel {
 
   get images => offers.fold([], (value, element) => value + element.images);
 
+  Set<Offer> getFilteredOffers(Map<String, String> selectedOptions) {
+    Set<Offer> result = Set.from(offers);
+    selectedOptions.forEach((key, value) {
+      result = result.where((offer) {
+        Asset asset = offer.outcomeTransactionTemplate.entries[0].asset;
+        return asset.translations['en']![key] == value || asset.translations['']![key] == value;
+      }).toSet();
+    });
+    return result;
+  }
+
   get assetNames =>
       offers.fold([], (value, element) => value + element.assetNames);
 

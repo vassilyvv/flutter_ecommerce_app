@@ -28,9 +28,12 @@ class MenuSectionEntryDetailScreenState
   final PageController _assetImagePageController =
       PageController(initialPage: 0);
   final PageController _assetPageController = PageController(initialPage: 0);
-  late Offer selectedOffer;
+  late Offer _selectedOffer;
   int selectedImageIndex = 0;
   int selectedAssetIndex = 0;
+  final Map<String, String> _selectedOptions = {};
+  Map<String, Set<String>> _dynamicChoices = {};
+  late Set<Map<String, String>> _availableFieldCombinations = {};
 
   void _goBack(BuildContext context) {
     Navigator.pop(context);
@@ -39,7 +42,9 @@ class MenuSectionEntryDetailScreenState
   @override
   void initState() {
     super.initState();
-    selectedOffer = widget.menuSectionEntry.offers[0];
+    _selectedOffer = widget.menuSectionEntry.offers[0];
+    _availableFieldCombinations = widget.menuSectionEntry.availableFieldCombinations();
+    _dynamicChoices = _fieldCombinationsToDynamicChoices(_availableFieldCombinations);
   }
 
   PreferredSizeWidget _appBar(BuildContext context) {
@@ -200,7 +205,7 @@ class MenuSectionEntryDetailScreenState
         Row(
           children: [
             Text(
-              selectedOffer.prices.toString(),
+              _selectedOffer.prices.toString(),
               style: Theme.of(context).textTheme.displayLarge,
             ),
             const Spacer(),
@@ -213,7 +218,7 @@ class MenuSectionEntryDetailScreenState
         Obx(() {
           return SizedBox(
             width: double.infinity,
-            child: cartController.cart.containsKey(selectedOffer)
+            child: cartController.cart.containsKey(_selectedOffer)
                 ? _goToCartButton(context)
                 : _addToCartButton(context),
           );
@@ -222,9 +227,9 @@ class MenuSectionEntryDetailScreenState
     );
   }
 
-  Map<String, Set<String>> _dynamicChoices() {
+  Map<String, Set<String>> _fieldCombinationsToDynamicChoices(Set<Map<String, String>> availableFieldCombinations) {
     Map<String, Set<String>> result = {};
-    for (var fieldSet in widget.menuSectionEntry.availableFieldCombinations()) {
+    for (var fieldSet in availableFieldCombinations) {
       for (var fieldValueEntry in fieldSet.entries) {
         if (!result.containsKey(fieldValueEntry.key)) {
           result[fieldValueEntry.key] = {};
@@ -235,15 +240,46 @@ class MenuSectionEntryDetailScreenState
     return result;
   }
 
-  Widget _dynamicChoicesSelect() {
+  Widget _optionsSelect() {
     return Column(
-        children: _dynamicChoices()
+        children: _dynamicChoices
             .entries
             .map((entry) => Row(
-                children: entry.value
-                    .map(
-                        (e) => MaterialButton(onPressed: () {}, child: Text(e)))
-                    .toList()))
+                    children: entry.value.map((e) {
+                  bool _isSelected = _selectedOptions[entry.key] == e;
+                  Map<String, String> _newOptions = Map.from(_selectedOptions);
+                  _newOptions[entry.key] = e;
+                  bool _isSelectable = true;
+                  Set<Map<String, String>> filteredFieldCombinations =
+                      _availableFieldCombinations;
+                  _newOptions.forEach((key, value) {
+                    filteredFieldCombinations = filteredFieldCombinations
+                        .where((fieldCombination) =>
+                            fieldCombination[key] == value)
+                        .toSet();
+                    if (filteredFieldCombinations.isEmpty) {
+                      _isSelectable = false;
+                    }
+                  });
+                  return MaterialButton(
+                      color: _isSelected ? Colors.black : Colors.orange,
+                      onPressed: () {
+                        if (_isSelectable) {
+                          setState(() {
+                            if (_selectedOptions[entry.key] == e) {
+                              _selectedOptions.remove(entry.key);
+                            } else {
+                              _selectedOptions[entry.key] = e;
+                              Set<Offer> filteredOffers = widget.menuSectionEntry.getFilteredOffers(_selectedOptions);
+                              if (filteredOffers.length == 1) {
+                                _selectedOffer = filteredOffers.first;
+                              }
+                            }
+                          });
+                        }
+                      },
+                      child: Text(e));
+                }).toList()))
             .toList());
   }
 
@@ -264,7 +300,7 @@ class MenuSectionEntryDetailScreenState
                         height: height * 0.42,
                         width: width,
                         child: PageView.builder(
-                            itemCount: selectedOffer
+                            itemCount: _selectedOffer
                                 .outcomeTransactionTemplate.entries.length,
                             controller: _assetPageController,
                             onPageChanged: (index) {
@@ -273,13 +309,13 @@ class MenuSectionEntryDetailScreenState
                               });
                             },
                             itemBuilder: (_, index) {
-                              return _assetSpecificContent(selectedOffer
+                              return _assetSpecificContent(_selectedOffer
                                   .outcomeTransactionTemplate
                                   .entries[index]
                                   .asset);
                             })),
-                    _dynamicChoicesSelect(),
-                    _offerSpecificContent(selectedOffer)
+                    _optionsSelect(),
+                    _offerSpecificContent(_selectedOffer)
                   ]),
             )));
   }

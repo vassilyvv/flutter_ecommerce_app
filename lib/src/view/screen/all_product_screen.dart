@@ -72,11 +72,14 @@ class AllProductsScreenState extends State<AllProductScreen> {
           IconButton(
             icon: Icon(
               Icons.favorite,
-              color: catalogueFilterController.filteredMenuSectionEntries[index].favoriteEntry != null
+              color: catalogueFilterController
+                          .filteredMenuSectionEntries[index].favoriteEntry !=
+                      null
                   ? Colors.redAccent
                   : const Color(0xFFA6A3A0),
             ),
-            onPressed: () => catalogueFilterController.addMenuSectionEntryToFavorites(menuSectionEntry),
+            onPressed: () => catalogueFilterController
+                .addMenuSectionEntryToFavorites(menuSectionEntry),
           ),
         ],
       ),
@@ -93,7 +96,8 @@ class AllProductsScreenState extends State<AllProductScreen> {
     );
   }
 
-  Widget _gridItemFooter(MenuSectionEntry menuSectionEntry, BuildContext context) {
+  Widget _gridItemFooter(
+      MenuSectionEntry menuSectionEntry, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -106,7 +110,8 @@ class AllProductsScreenState extends State<AllProductScreen> {
           children: [
             FittedBox(
               child: Text(
-                menuSectionEntry.offers[0].outcomeTransactionTemplate.entries[0].asset.translations['en']!['name']!,
+                menuSectionEntry.offers[0].outcomeTransactionTemplate.entries[0]
+                    .asset.translations['en']!['name']!,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: const TextStyle(
@@ -141,6 +146,7 @@ class AllProductsScreenState extends State<AllProductScreen> {
       ),
     );
   }
+
   //
   // Widget _recommendedProductListView(BuildContext context) {
   //   return SizedBox(
@@ -226,13 +232,12 @@ class AllProductsScreenState extends State<AllProductScreen> {
 
   Widget _menu() {
     return Obx(() {
-      MenuSection? selectedMenuSection = catalogueFilterController.selectedMenuSection.value;
+      MenuSection? selectedMenuSection =
+          catalogueFilterController.selectedMenuSection.value;
       if (selectedMenuSection == null) {
         return Text("No menu");
       }
-      List<MenuSection>? children =
-          selectedMenuSection.children;
-      children ??= [];
+      List<MenuSection>? children = selectedMenuSection.children;
       return Container(
           color: Colors.white,
           child: SingleChildScrollView(
@@ -254,10 +259,10 @@ class AllProductsScreenState extends State<AllProductScreen> {
             child: CustomScrollView(slivers: [
       SliverToBoxAdapter(
           child: Column(children: const [
-            Text(style: TextStyle(color: Colors.black), 'Превед педрило'),
         Text(style: TextStyle(color: Colors.black), 'Превед педрило'),
         Text(style: TextStyle(color: Colors.black), 'Превед педрило'),
-        ])),
+        Text(style: TextStyle(color: Colors.black), 'Превед педрило'),
+      ])),
       SliverPersistentHeader(
           pinned: true,
           delegate: PersistentHeaderDelegate(
