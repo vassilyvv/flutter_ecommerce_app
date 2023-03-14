@@ -321,7 +321,7 @@ class MenuSectionResponse extends GenericResponse {
 
   MenuSectionResponse.fromResponse(Response response)
       : super.fromResponse(response) {
-    menuSection = MenuSection.fromJson(response.data);
+    menuSection = MenuSection.fromJson(response.data, parent: null);
   }
 }
 

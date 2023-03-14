@@ -43,8 +43,10 @@ class MenuSectionEntryDetailScreenState
   void initState() {
     super.initState();
     _selectedOffer = widget.menuSectionEntry.offers[0];
-    _availableFieldCombinations = widget.menuSectionEntry.availableFieldCombinations();
-    _dynamicChoices = _fieldCombinationsToDynamicChoices(_availableFieldCombinations);
+    _availableFieldCombinations =
+        widget.menuSectionEntry.availableFieldCombinations();
+    _dynamicChoices =
+        _fieldCombinationsToDynamicChoices(_availableFieldCombinations);
   }
 
   PreferredSizeWidget _appBar(BuildContext context) {
@@ -189,11 +191,11 @@ class MenuSectionEntryDetailScreenState
       assetImagesPageView(asset, width, height),
       const SizedBox(height: 10),
       Text(
-        "About",
+        asset.translations['en']!['name']!,
         style: Theme.of(context).textTheme.headlineMedium,
       ),
       const SizedBox(height: 10),
-      Text(asset.translations['en']!['name']!)
+      Text(asset.translations['en']!['description']!)
     ]);
   }
 
@@ -227,10 +229,12 @@ class MenuSectionEntryDetailScreenState
     );
   }
 
-  Map<String, Set<String>> _fieldCombinationsToDynamicChoices(Set<Map<String, String>> availableFieldCombinations) {
+  Map<String, Set<String>> _fieldCombinationsToDynamicChoices(
+      Set<Map<String, String>> availableFieldCombinations) {
     Map<String, Set<String>> result = {};
     for (var fieldSet in availableFieldCombinations) {
-      for (var fieldValueEntry in fieldSet.entries) {
+      for (var fieldValueEntry
+          in fieldSet.entries.where((entry) => entry.key[0] == '#')) {
         if (!result.containsKey(fieldValueEntry.key)) {
           result[fieldValueEntry.key] = {};
         }
@@ -242,8 +246,7 @@ class MenuSectionEntryDetailScreenState
 
   Widget _optionsSelect() {
     return Column(
-        children: _dynamicChoices
-            .entries
+        children: _dynamicChoices.entries
             .map((entry) => Row(
                     children: entry.value.map((e) {
                   bool _isSelected = _selectedOptions[entry.key] == e;
@@ -261,8 +264,11 @@ class MenuSectionEntryDetailScreenState
                       _isSelectable = false;
                     }
                   });
-                  return MaterialButton(
-                      color: _isSelected ? Colors.black : Colors.orange,
+                  return OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          backgroundColor:
+                              _isSelected ? Colors.deepOrange : Colors.white,
+                          foregroundColor: Colors.deepOrange),
                       onPressed: () {
                         if (_isSelectable) {
                           setState(() {
@@ -270,7 +276,9 @@ class MenuSectionEntryDetailScreenState
                               _selectedOptions.remove(entry.key);
                             } else {
                               _selectedOptions[entry.key] = e;
-                              Set<Offer> filteredOffers = widget.menuSectionEntry.getFilteredOffers(_selectedOptions);
+                              Set<Offer> filteredOffers = widget
+                                  .menuSectionEntry
+                                  .getFilteredOffers(_selectedOptions);
                               if (filteredOffers.length == 1) {
                                 _selectedOffer = filteredOffers.first;
                               }
@@ -278,7 +286,12 @@ class MenuSectionEntryDetailScreenState
                           });
                         }
                       },
-                      child: Text(e));
+                      child: Text(
+                        e,
+                        style: TextStyle(
+                            color:
+                                _isSelected ? Colors.white : Colors.deepOrange),
+                      ));
                 }).toList()))
             .toList());
   }

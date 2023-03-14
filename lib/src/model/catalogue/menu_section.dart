@@ -4,12 +4,13 @@ import '../company/company.dart';
 class MenuSection extends TranslatableModel {
   late Company? company;
   List<MenuSection> children = [];
+  MenuSection? parent;
 
-  MenuSection.fromJson(json) : super.fromJson(json) {
+  MenuSection.fromJson(json, {this.parent}) : super.fromJson(json) {
     company =
         json['company'] == null ? null : Company.fromJson(json['company']);
     for (int i = 0; i < json['children'].length; ++i) {
-      children.add(MenuSection.fromJson(json['children'][i]));
+      children.add(MenuSection.fromJson(json['children'][i], parent: this));
     }
   }
 

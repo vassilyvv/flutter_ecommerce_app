@@ -25,7 +25,8 @@ class MenuSectionEntry extends BaseModel {
     selectedOptions.forEach((key, value) {
       result = result.where((offer) {
         Asset asset = offer.outcomeTransactionTemplate.entries[0].asset;
-        return asset.translations['en']![key] == value || asset.translations['']![key] == value;
+        return asset.translations['en']![key] == value ||
+            asset.translations['']![key] == value;
       }).toSet();
     });
     return result;
@@ -50,8 +51,8 @@ class MenuSectionEntry extends BaseModel {
           }
           result.add(combinedValues);
           if (result.length > 1) {
-            combinedValues.removeWhere(
-                (key, value) => !result.first.keys.contains(key));
+            combinedValues
+                .removeWhere((key, value) => !result.first.keys.contains(key));
           }
         }
       }

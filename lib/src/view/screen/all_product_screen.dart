@@ -218,16 +218,15 @@ class AllProductsScreenState extends State<AllProductScreen> {
   // }
 
   Widget _menuItem(MenuSection menuSection) {
-    return ElevatedButton(
-        style: ButtonStyle(
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
-                    side: BorderSide(color: Colors.red)))),
+    return OutlinedButton(
+        style: OutlinedButton.styleFrom(foregroundColor: Colors.deepOrange),
         onPressed: () {
           catalogueFilterController.selectMenuSection(menuSection);
         },
-        child: Text(menuSection.translations['en']!['name']!));
+        child: Center(
+            child: Text(
+                style: const TextStyle(color: Colors.deepOrange),
+                menuSection.translations['en']!['name']!)));
   }
 
   Widget _menu() {
@@ -235,20 +234,26 @@ class AllProductsScreenState extends State<AllProductScreen> {
       MenuSection? selectedMenuSection =
           catalogueFilterController.selectedMenuSection.value;
       if (selectedMenuSection == null) {
-        return Text("No menu");
+        return const Text("No menu");
       }
       List<MenuSection>? children = selectedMenuSection.children;
       return Container(
           color: Colors.white,
           child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                  children: children
-                      .map((childMenuSection) => Padding(
-                            padding: const EdgeInsets.only(right: 5),
-                            child: _menuItem(childMenuSection),
-                          ))
-                      .toList())));
+              child: Row(children: [
+                if (catalogueFilterController
+                        .selectedMenuSection.value?.parent !=
+                    null)
+                  _menuItem(catalogueFilterController
+                      .selectedMenuSection.value!.parent!),
+                ...children
+                    .map((childMenuSection) => Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: _menuItem(childMenuSection),
+                        ))
+                    .toList()
+              ])));
     });
   }
 
@@ -266,7 +271,10 @@ class AllProductsScreenState extends State<AllProductScreen> {
       SliverPersistentHeader(
           pinned: true,
           delegate: PersistentHeaderDelegate(
-              fadeOutOnScroll: false, widget: Column(children: [_menu()]))),
+              fadeOutOnScroll: false,
+              widget: Column(children: [
+                Align(alignment: Alignment.centerLeft, child: _menu())
+              ]))),
       const SliverToBoxAdapter(child: MenuSectionEntriesGridView())
     ])));
   }
