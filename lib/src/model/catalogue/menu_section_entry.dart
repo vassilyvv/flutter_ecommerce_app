@@ -7,12 +7,10 @@ import 'menu_section_entries_list_entry.dart';
 
 class MenuSectionEntry extends BaseModel {
   List<Offer> offers = [];
-  late MenuSectionEntriesListEntry? favoriteEntry;
+  late String? favoriteEntry;
 
   MenuSectionEntry.fromJson(json) : super.fromJson(json) {
-    favoriteEntry = json['favorite_entry'] == null
-        ? null
-        : MenuSectionEntriesListEntry.fromJson(json['favorite_entry']);
+    favoriteEntry = json['favorite_entry'];
     for (int i = 0; i < json['offers'].length; ++i) {
       offers.add(Offer.fromJson(json['offers'][i]));
     }

@@ -8,12 +8,16 @@ class Offer extends BaseModel {
   late Node? outcomeNode;
   late TransactionTemplate incomeTransactionTemplate;
   late TransactionTemplate outcomeTransactionTemplate;
+  double rating = 0;
+  double? userRating;
 
   Offer.fromJson(json) : super.fromJson(json) {
     incomeNode =
     json["income_node"] == null ? null : Node.fromJson(json["income_node"]);
     outcomeNode =
     json["outcome_node"] == null ? null : Node.fromJson(json["outcome_node"]);
+    rating = json['rating'].toDouble();
+    userRating = json['userRaging'];
     incomeTransactionTemplate =
         TransactionTemplate.fromJson(json['income_transaction_template']);
     outcomeTransactionTemplate =

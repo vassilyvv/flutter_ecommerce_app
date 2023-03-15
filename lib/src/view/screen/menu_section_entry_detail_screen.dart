@@ -4,12 +4,15 @@ import 'package:e_commerce_flutter/core/app_color.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../../controller/auth_controller.dart';
 import '../../controller/cart_controller.dart';
+import '../../model/auth/user.dart';
 import '../../model/catalogue/asset.dart';
 import '../../model/catalogue/menu_section_entry.dart';
 import '../../model/trade/offer.dart';
 
 final CartController cartController = Get.put(CartController());
+final AuthController authController = Get.put(AuthController());
 
 class MenuSectionEntryDetailScreen extends StatefulWidget {
   const MenuSectionEntryDetailScreen(
@@ -112,10 +115,19 @@ class MenuSectionEntryDetailScreenState
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         RatingBar.builder(
-          initialRating: 4.5,
+          initialRating: _selectedOffer.userRating ?? _selectedOffer.rating,
           direction: Axis.horizontal,
           itemBuilder: (_, __) => const Icon(Icons.star, color: Colors.amber),
-          onRatingUpdate: (_) {},
+          onRatingUpdate: (newRating) {
+            User? authenticatedUser = authController.authenticatedUser.value;
+            if (authenticatedUser != null) {
+              apiClient.rateOffer(
+                  authenticatedUser.accessToken!, _selectedOffer.id, newRating.toInt());
+            }
+            else {
+              print('not authenticated');
+            }
+          },
         ),
         Text(
           "(4500 Reviews)",

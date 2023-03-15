@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:e_commerce_flutter/src/api/client.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +7,7 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
 import '../model/auth/user.dart';
+import 'api/client.dart';
 
 final apiClient = APIClient();
 
@@ -49,6 +49,8 @@ class AuthController extends GetxController {
       UserDataResponse authenticatedUserDataResponse =
           await apiClient.getAuthenticatedUserData(loginResponse.accessToken!);
       authenticatedUser.value = authenticatedUserDataResponse.user;
+      authenticatedUser.value!.accessToken = loginResponse.accessToken;
+      authenticatedUser.value!.refreshToken = loginResponse.refreshToken;
     } else {
       Get.snackbar(
           snackPosition: SnackPosition.BOTTOM,

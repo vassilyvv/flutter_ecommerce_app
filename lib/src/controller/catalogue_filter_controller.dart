@@ -1,10 +1,10 @@
-import 'package:e_commerce_flutter/src/api/client.dart';
 import 'package:e_commerce_flutter/src/controller/auth_controller.dart';
 import 'package:get/get.dart';
 
 import '../model/catalogue/menu_section.dart';
 import '../model/catalogue/menu_section_entries_list_entry.dart';
 import '../model/catalogue/menu_section_entry.dart';
+import 'api/client.dart';
 
 const String marketplaceId = String.fromEnvironment('apiBaseUrl',
     defaultValue: 'effe47ef-1614-498c-b541-caaff951e7a7');
@@ -66,7 +66,7 @@ class CatalogueFilterController extends GetxController with StateMixin {
         filteredMenuSectionEntries
             .firstWhere(
                 (menuSectionEntry) => menuSectionEntry == menuSectionEntry)
-            .favoriteEntry = createdEntry;
+            .favoriteEntry = createdEntry.id;
       }
       update();
       return createdEntry;
@@ -75,12 +75,12 @@ class CatalogueFilterController extends GetxController with StateMixin {
   }
 
   Future<bool> removeMenuSectionEntryFromFavorites(
-      MenuSectionEntriesListEntry menuSectionEntriesListEntry) async {
+      String menuSectionEntriesListEntryId) async {
     String? accessToken =
         Get.put(AuthController()).authenticatedUser.value?.accessToken;
     if (accessToken != null) {
       RemoveMenuSectionEntryFromFavoritesResponse? response = await APIClient()
-          .removeFavoritesEntry(accessToken, menuSectionEntriesListEntry);
+          .removeFavoritesEntry(accessToken, menuSectionEntriesListEntryId);
       if (response != null && response.statusCode < 300) {
         return true;
       }

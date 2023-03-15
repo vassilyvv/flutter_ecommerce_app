@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../api/client.dart';
+import '../../controller/api/client.dart';
 import '../../controller/auth_controller.dart';
 import '../constants.dart';
 import '../widget/fields/phone_number.dart';

@@ -2,17 +2,17 @@ import 'dart:collection';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' as getx;
 
-import '../controller/auth_controller.dart';
-import '../model/auth/user.dart';
-import '../model/catalogue/menu_section_entries_list_entry.dart';
-import '../model/catalogue/menu_section_entry.dart';
-import '../model/company/company.dart';
-import '../model/catalogue/menu_section.dart';
-import '../model/trade/order.dart';
-import '../model/logistics/node.dart';
-import '../model/trade/order_entry.dart';
-import '../model/logistics/transaction.dart';
-import '../model/logistics/transaction_entry.dart';
+import '../auth_controller.dart';
+import '../../model/auth/user.dart';
+import '../../model/catalogue/menu_section_entries_list_entry.dart';
+import '../../model/catalogue/menu_section_entry.dart';
+import '../../model/company/company.dart';
+import '../../model/catalogue/menu_section.dart';
+import '../../model/trade/order.dart';
+import '../../model/logistics/node.dart';
+import '../../model/trade/order_entry.dart';
+import '../../model/logistics/transaction.dart';
+import '../../model/logistics/transaction_entry.dart';
 
 final AuthController controller = getx.Get.put(AuthController());
 const apiBaseUrl =
@@ -135,10 +135,7 @@ class UserDataResponse extends GenericResponse {
   late User? user;
   String? validationError;
 
-  UserDataResponse(
-      statusCode,
-      this.user)
-      : super(statusCode);
+  UserDataResponse(statusCode, this.user) : super(statusCode);
 
   UserDataResponse.fromResponse(Response response)
       : super.fromResponse(response) {
@@ -201,34 +198,40 @@ class AddMenuSectionEntryToFavoritesResponse extends GenericResponse {
   MenuSectionEntriesListEntry? menuSectionEntriesListEntry;
   Map<String, dynamic>? validationError;
 
-  AddMenuSectionEntryToFavoritesResponse(statusCode, this.menuSectionEntriesListEntry, this.validationError)
+  AddMenuSectionEntryToFavoritesResponse(
+      statusCode, this.menuSectionEntriesListEntry, this.validationError)
       : super(statusCode);
 
   AddMenuSectionEntryToFavoritesResponse.fromResponse(Response response)
       : super.fromResponse(response) {
     if (response.statusCode == 201) {
-      menuSectionEntriesListEntry = MenuSectionEntriesListEntry.fromJson(response.data);
+      menuSectionEntriesListEntry =
+          MenuSectionEntriesListEntry.fromJson(response.data);
     } else {
       validationError = response.data;
     }
   }
 }
+
 class RemoveMenuSectionEntryFromFavoritesResponse extends GenericResponse {
   MenuSectionEntriesListEntry? menuSectionEntriesListEntry;
   Map<String, dynamic>? validationError;
 
-  RemoveMenuSectionEntryFromFavoritesResponse(statusCode, this.menuSectionEntriesListEntry, this.validationError)
+  RemoveMenuSectionEntryFromFavoritesResponse(
+      statusCode, this.menuSectionEntriesListEntry, this.validationError)
       : super(statusCode);
 
   RemoveMenuSectionEntryFromFavoritesResponse.fromResponse(Response response)
       : super.fromResponse(response) {
     if (response.statusCode == 201) {
-      menuSectionEntriesListEntry = MenuSectionEntriesListEntry.fromJson(response.data);
+      menuSectionEntriesListEntry =
+          MenuSectionEntriesListEntry.fromJson(response.data);
     } else {
       validationError = response.data;
     }
   }
 }
+
 class OrderCreateResponse extends GenericResponse {
   Order? order;
   Map<String, dynamic>? validationError;
@@ -444,16 +447,22 @@ class APIClient {
       String accessToken, MenuSectionEntry menuSectionEntry) async {
     return AddMenuSectionEntryToFavoritesResponse.fromResponse(await _dio.post(
       "$apiBaseUrl/catalogue/menusectionentrieslistentry/",
-      data: {"menu_section_entry_id": menuSectionEntry.id, "menu_section_entries_list": "00000000-0000-0000-0000-000000000001"},
+      data: {
+        "menu_section_entry_id": menuSectionEntry.id,
+        "menu_section_entries_list": "00000000-0000-0000-0000-000000000001"
+      },
       options: Options(
           validateStatus: (status) => status! < 500,
           headers: {'Authorization': 'Bearer $accessToken'}),
     ));
   }
+
   Future<RemoveMenuSectionEntryFromFavoritesResponse?> removeFavoritesEntry(
-      String accessToken, MenuSectionEntriesListEntry menuSectionEntriesListEntry) async {
-    return RemoveMenuSectionEntryFromFavoritesResponse.fromResponse(await _dio.delete(
-      "$apiBaseUrl/catalogue/menusectionentrieslistentry/${menuSectionEntriesListEntry.id}",
+      String accessToken,
+      String menuSectionEntriesListEntryId) async {
+    return RemoveMenuSectionEntryFromFavoritesResponse.fromResponse(
+        await _dio.delete(
+      "$apiBaseUrl/catalogue/menusectionentrieslistentry/$menuSectionEntriesListEntryId",
       options: Options(
           validateStatus: (status) => status! < 500,
           headers: {'Authorization': 'Bearer $accessToken'}),
@@ -538,6 +547,20 @@ class APIClient {
         "order_entries": entries,
         "promocodes": promocodes,
       },
+      options: Options(
+          validateStatus: (status) => status! < 500,
+          headers: {'Authorization': 'Bearer $accessToken'}),
+    ));
+  }
+
+  Future<GenericResponse> rateOffer(
+    String accessToken,
+    String offerId,
+    int value,
+  ) async {
+    return OrderCreateResponse.fromResponse(await _dio.post(
+      "$apiBaseUrl/trade/offerrating/",
+      data: {"offer": offerId, "value": value},
       options: Options(
           validateStatus: (status) => status! < 500,
           headers: {'Authorization': 'Bearer $accessToken'}),
