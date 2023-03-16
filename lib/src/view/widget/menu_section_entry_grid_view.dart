@@ -1,4 +1,5 @@
 import 'package:e_commerce_flutter/src/controller/catalogue_filter_controller.dart';
+import 'package:e_commerce_flutter/src/view/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -15,7 +16,8 @@ CatalogueFilterController catalogueFilterController =
     Get.put(CatalogueFilterController());
 
 class MenuSectionEntriesGridView extends StatelessWidget {
-  const MenuSectionEntriesGridView({Key? key}) : super(key: key);
+  MenuSectionEntriesGridView({Key? key, required this.favorites}) : super(key: key);
+  bool favorites;
 
   Widget _addToFavoritesButton(MenuSectionEntry menuSectionEntry) {
     return IconButton(
@@ -63,16 +65,13 @@ class MenuSectionEntriesGridView extends StatelessWidget {
                       child: Text(
                     offer.prices,
                     textAlign: TextAlign.left,
-                    style: GoogleFonts.nunitoSans(
-                        fontSize: 16, fontWeight: FontWeight.bold),
                   ))
                 ]),
                 Row(children: [
                   Expanded(
                       child: Text(offer.assetNames.toSet().toList().join(','),
                           textAlign: TextAlign.left,
-                          maxLines: 1,
-                          style: GoogleFonts.nunitoSans(fontSize: 16)))
+                          maxLines: 1))
                 ])
               ]),
             )));
@@ -81,13 +80,17 @@ class MenuSectionEntriesGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    List<MenuSectionEntry> menuSectionEntriesToDisplay = catalogueFilterController.filteredMenuSectionEntries;
+    if (favorites) {
+      menuSectionEntriesToDisplay = menuSectionEntriesToDisplay.where((menuSectionEntry) => menuSectionEntry.favoriteEntry !=null).toList();
+    }
     return Obx(
       () {
         return catalogueFilterController.filteredMenuSectionEntries.isNotEmpty
             ? GridView.builder(
                 padding: const EdgeInsets.all(0),
                 itemCount:
-                    catalogueFilterController.filteredMenuSectionEntries.length,
+                menuSectionEntriesToDisplay.length,
                 shrinkWrap: true,
                 physics: const ScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -96,8 +99,7 @@ class MenuSectionEntriesGridView extends StatelessWidget {
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10),
                 itemBuilder: (_, index) {
-                  MenuSectionEntry menuSectionEntry = catalogueFilterController
-                      .filteredMenuSectionEntries[index];
+                  MenuSectionEntry menuSectionEntry = menuSectionEntriesToDisplay[index];
                   return GridTile(
                       child: OpenContainerWrapper(
                     menuSectionEntry: menuSectionEntry,
@@ -110,7 +112,7 @@ class MenuSectionEntriesGridView extends StatelessWidget {
                                     //Row(children:[_offerFooter(offer), _addToFavoritesButton(menuSectionEntry, index)])
                                   ]))
                               .toList()),
-                      Positioned(
+                      if (authController.authenticatedUser.value?.accessToken != null) Positioned(
                         right: 5,
                         bottom: 7,
                         child: _addToFavoritesButton(menuSectionEntry),

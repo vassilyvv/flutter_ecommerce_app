@@ -6,12 +6,14 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../controller/auth_controller.dart';
 import '../../controller/cart_controller.dart';
+import '../../controller/nav_controller.dart';
 import '../../model/auth/user.dart';
 import '../../model/catalogue/asset.dart';
 import '../../model/catalogue/menu_section_entry.dart';
 import '../../model/trade/offer.dart';
 
 final CartController cartController = Get.put(CartController());
+final NavController navController = Get.put(NavController());
 final AuthController authController = Get.put(AuthController());
 
 class MenuSectionEntryDetailScreen extends StatefulWidget {
@@ -121,10 +123,9 @@ class MenuSectionEntryDetailScreenState
           onRatingUpdate: (newRating) {
             User? authenticatedUser = authController.authenticatedUser.value;
             if (authenticatedUser != null) {
-              apiClient.rateOffer(
-                  authenticatedUser.accessToken!, _selectedOffer.id, newRating.toInt());
-            }
-            else {
+              apiClient.rateOffer(authenticatedUser.accessToken!,
+                  _selectedOffer.id, newRating.toInt());
+            } else {
               print('not authenticated');
             }
           },
@@ -133,47 +134,12 @@ class MenuSectionEntryDetailScreenState
           "(4500 Reviews)",
           style: Theme.of(context)
               .textTheme
-              .displaySmall
+              .bodyMedium
               ?.copyWith(fontWeight: FontWeight.w300),
         )
       ],
     );
   }
-
-  // Widget menuSectionEntrySizesListView() {
-  //   return ListView.builder(
-  //     scrollDirection: Axis.horizontal,
-  //     itemCount: controller.sizeType(menuSectionEntry).length,
-  //     itemBuilder: (_, index) {
-  //       return InkWell(
-  //         onTap: () => controller.switchBetweenMenuSectionEntrySizes(
-  //             menuSectionEntry, index),
-  //         child: Container(
-  //           margin: const EdgeInsets.only(right: 5, left: 5),
-  //           alignment: Alignment.center,
-  //           width: controller.isNominal(menuSectionEntry) ? 40 : 70,
-  //           decoration: BoxDecoration(
-  //             color: controller.sizeType(menuSectionEntry)[index].isSelected ==
-  //                     false
-  //                 ? Colors.white
-  //                 : AppColor.lightOrange,
-  //             borderRadius: BorderRadius.circular(10),
-  //             border: Border.all(color: Colors.grey, width: 0.4),
-  //           ),
-  //           child: FittedBox(
-  //             child: Text(
-  //               controller.sizeType(menuSectionEntry)[index].numerical,
-  //               style: const TextStyle(
-  //                 fontWeight: FontWeight.w500,
-  //                 fontSize: 15,
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   MaterialButton _addToCartButton(BuildContext context) {
     return MaterialButton(
@@ -191,6 +157,7 @@ class MenuSectionEntryDetailScreenState
       textColor: Colors.white,
       onPressed: () {
         _goBack(context);
+        navController.switchBetweenBottomNavigationItems(2);
       },
       child: const Text("Go to cart"),
     );
@@ -204,7 +171,7 @@ class MenuSectionEntryDetailScreenState
       const SizedBox(height: 10),
       Text(
         asset.translations['en']!['name']!,
-        style: Theme.of(context).textTheme.headlineMedium,
+        style: Theme.of(context).textTheme.headlineSmall,
       ),
       const SizedBox(height: 10),
       Text(asset.translations['en']!['description']!)
@@ -220,7 +187,7 @@ class MenuSectionEntryDetailScreenState
           children: [
             Text(
               _selectedOffer.prices.toString(),
-              style: Theme.of(context).textTheme.displayLarge,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             const Spacer(),
             Text(
@@ -276,34 +243,38 @@ class MenuSectionEntryDetailScreenState
                       _isSelectable = false;
                     }
                   });
-                  return OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          backgroundColor:
-                              _isSelected ? Colors.deepOrange : Colors.white,
-                          foregroundColor: Colors.deepOrange),
-                      onPressed: () {
-                        if (_isSelectable) {
-                          setState(() {
-                            if (_selectedOptions[entry.key] == e) {
-                              _selectedOptions.remove(entry.key);
-                            } else {
-                              _selectedOptions[entry.key] = e;
-                              Set<Offer> filteredOffers = widget
-                                  .menuSectionEntry
-                                  .getFilteredOffers(_selectedOptions);
-                              if (filteredOffers.length == 1) {
-                                _selectedOffer = filteredOffers.first;
-                              }
+                  return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                              backgroundColor: _isSelected
+                                  ? Colors.deepOrange
+                                  : Colors.white,
+                              foregroundColor: Colors.deepOrange),
+                          onPressed: () {
+                            if (_isSelectable) {
+                              setState(() {
+                                if (_selectedOptions[entry.key] == e) {
+                                  _selectedOptions.remove(entry.key);
+                                } else {
+                                  _selectedOptions[entry.key] = e;
+                                  Set<Offer> filteredOffers = widget
+                                      .menuSectionEntry
+                                      .getFilteredOffers(_selectedOptions);
+                                  if (filteredOffers.length == 1) {
+                                    _selectedOffer = filteredOffers.first;
+                                  }
+                                }
+                              });
                             }
-                          });
-                        }
-                      },
-                      child: Text(
-                        e,
-                        style: TextStyle(
-                            color:
-                                _isSelected ? Colors.white : Colors.deepOrange),
-                      ));
+                          },
+                          child: Text(
+                            e,
+                            style: TextStyle(
+                                color: _isSelected
+                                    ? Colors.white
+                                    : Colors.deepOrange),
+                          )));
                 }).toList()))
             .toList());
   }
@@ -315,33 +286,32 @@ class MenuSectionEntryDetailScreenState
 
     return SafeArea(
         child: Scaffold(
-            extendBodyBehindAppBar: true,
-            appBar: _appBar(context),
-            body: SingleChildScrollView(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                        height: height * 0.42,
-                        width: width,
-                        child: PageView.builder(
-                            itemCount: _selectedOffer
-                                .outcomeTransactionTemplate.entries.length,
-                            controller: _assetPageController,
-                            onPageChanged: (index) {
-                              setState(() {
-                                selectedAssetIndex = index;
-                              });
-                            },
-                            itemBuilder: (_, index) {
-                              return _assetSpecificContent(_selectedOffer
-                                  .outcomeTransactionTemplate
-                                  .entries[index]
-                                  .asset);
-                            })),
-                    _optionsSelect(),
-                    _offerSpecificContent(_selectedOffer)
-                  ]),
-            )));
+      extendBodyBehindAppBar: true,
+      appBar: _appBar(context),
+      body: Column(children: [
+        Expanded(
+            child: SizedBox(
+                width: width,
+                child: PageView.builder(
+                    itemCount: _selectedOffer
+                        .outcomeTransactionTemplate.entries.length,
+                    controller: _assetPageController,
+                    onPageChanged: (index) {
+                      setState(() {
+                        selectedAssetIndex = index;
+                      });
+                    },
+                    itemBuilder: (_, index) {
+                      return SingleChildScrollView(
+                          child: _assetSpecificContent(_selectedOffer
+                              .outcomeTransactionTemplate
+                              .entries[index]
+                              .asset));
+                    }))),
+        const Spacer(),
+        _optionsSelect(),
+        _offerSpecificContent(_selectedOffer)
+      ]),
+    ));
   }
 }

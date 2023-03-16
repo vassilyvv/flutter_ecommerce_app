@@ -10,6 +10,12 @@ class AppData {
       Colors.grey,
     ),
     BottomNavBarItem(
+      "Favorites",
+      const Icon(Icons.favorite),
+      const Color(0xFFEC6813),
+      Colors.grey,
+    ),
+    BottomNavBarItem(
       "Cart",
       const Icon(Icons.shopping_cart),
       const Color(0xFFEC6813),

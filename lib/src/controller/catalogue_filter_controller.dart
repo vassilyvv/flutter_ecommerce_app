@@ -41,6 +41,7 @@ class CatalogueFilterController extends GetxController with StateMixin {
   Future<void> onInit() async {
     super.onInit();
     selectRootMenuSection(null).then((selectedMenuSection) {});
+    search('');
   }
 
   _fetchMenuSectionEntriesFromServer(String? menuSectionEntriesListId,

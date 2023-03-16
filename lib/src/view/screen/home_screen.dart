@@ -1,3 +1,4 @@
+import 'package:e_commerce_flutter/src/controller/auth_controller.dart';
 import 'package:e_commerce_flutter/src/controller/catalogue_filter_controller.dart';
 import 'package:e_commerce_flutter/src/controller/nav_controller.dart';
 import 'package:get/get.dart';
@@ -8,9 +9,12 @@ import 'package:e_commerce_flutter/src/view/screen/profile_screen.dart';
 import 'package:e_commerce_flutter/src/view/screen/all_product_screen.dart';
 
 import '../../../core/app_data.dart';
+import 'favorites_screen.dart';
 
 final NavController navController = Get.put(NavController());
-final CatalogueFilterController catalogueFilterController = Get.put(CatalogueFilterController());
+final CatalogueFilterController catalogueFilterController =
+    Get.put(CatalogueFilterController());
+final AuthController authController = Get.put(AuthController());
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,7 +22,7 @@ class HomeScreen extends StatelessWidget {
   static const List<Widget> screens = [
     AllProductScreen(),
     // SearchScreen(),
-    // FavoriteScreen(),
+    FavoritesScreen(),
     CartScreen(),
     AuthScreen()
   ];
@@ -28,16 +32,21 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       bottomNavigationBar: Obx(() {
         return BottomNavigationBar(
-          unselectedItemColor:Colors.grey,
+          unselectedItemColor: Colors.grey,
           selectedItemColor: Colors.deepOrange,
           items: AppData.bottomNavBarItems
               .map(
-                (item) =>
-                    BottomNavigationBarItem(icon: item.icon, label: item.title),
+                (item) => BottomNavigationBarItem(
+                  icon: item.icon,
+                  label: item.title,
+                ),
               )
               .toList(),
           currentIndex: navController.currentBottomNavItemIndex.value,
-          onTap: navController.switchBetweenBottomNavigationItems,
+          onTap: (index) {navController.switchBetweenBottomNavigationItems(index);
+            if (index == 0) {
+              catalogueFilterController.search('');
+            }},
         );
       }),
       body: Obx(() {
