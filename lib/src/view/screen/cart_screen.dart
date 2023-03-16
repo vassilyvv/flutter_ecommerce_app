@@ -5,7 +5,6 @@ import 'package:e_commerce_flutter/src/view/animation/animated_switcher_wrapper.
 
 import '../../controller/cart_controller.dart';
 
-
 final CartController cartController = Get.put(CartController());
 
 class CartScreen extends StatelessWidget {
@@ -50,11 +49,10 @@ class CartScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   child: Padding(
                     padding: const EdgeInsets.all(5),
-                    child: Image.asset(
-                      cartEntry.key.images[0],
-                      width: 100,
-                      height: 90,
-                    ),
+                    child: Image.network(
+                        'http://localhost:8000${cartEntry.key.images[0]}',
+                        width: 100,
+                        height: 90),
                   ),
                 ),
               ),
@@ -103,7 +101,8 @@ class CartScreen extends StatelessWidget {
                     children: [
                       IconButton(
                         splashRadius: 10.0,
-                        onPressed: () => cartController.decreaseItem(cartEntry.key),
+                        onPressed: () =>
+                            cartController.decreaseItem(cartEntry.key),
                         icon: const Icon(
                           Icons.remove,
                           color: Color(0xFFEC6813),
@@ -123,7 +122,8 @@ class CartScreen extends StatelessWidget {
                       ),
                       IconButton(
                         splashRadius: 10.0,
-                        onPressed: () => cartController.increaseItem(cartEntry.key),
+                        onPressed: () =>
+                            cartController.increaseItem(cartEntry.key),
                         icon: const Icon(Icons.add, color: Color(0xFFEC6813)),
                       ),
                     ])),
@@ -134,7 +134,8 @@ class CartScreen extends StatelessWidget {
                 ),
                 child: IconButton(
                   splashRadius: 10.0,
-                  onPressed: () => cartController.removeItemFromCart(cartEntry.key),
+                  onPressed: () =>
+                      cartController.removeItemFromCart(cartEntry.key),
                   icon: const Icon(Icons.clear, color: Colors.red),
                 ))
           ],
@@ -156,17 +157,19 @@ class CartScreen extends StatelessWidget {
           ),
           Obx(
             () {
-              return AnimatedSwitcherWrapper(
-                child: Text(
-                  "\$${cartController.totalPrice}",
-                  key: ValueKey<int>(cartController.totalPrice.values.toList()[0]),
-                  style: const TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xFFEC6813),
-                  ),
-                ),
-              );
+              return Column(
+                  children: cartController.totalPrice.values
+                      .map((value) => AnimatedSwitcherWrapper(
+                              child: Text(
+                            "\$$value",
+                            key: ValueKey<int>(value),
+                            style: const TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFFEC6813),
+                            ),
+                          )))
+                      .toList());
             },
           )
         ],
@@ -196,10 +199,11 @@ class CartScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                  child:
-                      cartController.cart.isEmpty ? const EmptyCart() : cartList()),
-              bottomBarTitle(),
-              bottomBarButton()
+                  child: cartController.cart.isEmpty
+                      ? const EmptyCart()
+                      : cartList()),
+              if (cartController.cart.isNotEmpty) bottomBarTitle(),
+              if (cartController.cart.isNotEmpty) bottomBarButton()
             ],
           )),
     );
