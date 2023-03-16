@@ -17,7 +17,7 @@ CatalogueFilterController catalogueFilterController =
 class MenuSectionEntriesGridView extends StatelessWidget {
   const MenuSectionEntriesGridView({Key? key}) : super(key: key);
 
-  Widget _addToFavoritesButton(MenuSectionEntry menuSectionEntry, int index) {
+  Widget _addToFavoritesButton(MenuSectionEntry menuSectionEntry) {
     return IconButton(
       icon: Icon(
         Icons.favorite,
@@ -26,7 +26,6 @@ class MenuSectionEntriesGridView extends StatelessWidget {
             : const Color(0xFFA6A3A0),
       ),
       onPressed: () {
-        print(index);
         if (menuSectionEntry.favoriteEntry != null) {
           catalogueFilterController.removeMenuSectionEntryFromFavorites(
               menuSectionEntry.favoriteEntry!);
@@ -114,7 +113,7 @@ class MenuSectionEntriesGridView extends StatelessWidget {
                       Positioned(
                         right: 5,
                         bottom: 7,
-                        child: _addToFavoritesButton(menuSectionEntry, index),
+                        child: _addToFavoritesButton(menuSectionEntry),
                       )
                     ]),
                   ));

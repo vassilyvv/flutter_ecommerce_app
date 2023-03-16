@@ -195,18 +195,17 @@ class OrdersListResponse extends GenericResponse {
 }
 
 class AddMenuSectionEntryToFavoritesResponse extends GenericResponse {
-  MenuSectionEntriesListEntry? menuSectionEntriesListEntry;
+  String? menuSectionEntriesListEntryId;
   Map<String, dynamic>? validationError;
 
   AddMenuSectionEntryToFavoritesResponse(
-      statusCode, this.menuSectionEntriesListEntry, this.validationError)
+      statusCode, this.menuSectionEntriesListEntryId, this.validationError)
       : super(statusCode);
 
   AddMenuSectionEntryToFavoritesResponse.fromResponse(Response response)
       : super.fromResponse(response) {
     if (response.statusCode == 201) {
-      menuSectionEntriesListEntry =
-          MenuSectionEntriesListEntry.fromJson(response.data);
+      menuSectionEntriesListEntryId = response.data['id'];
     } else {
       validationError = response.data;
     }
@@ -214,22 +213,12 @@ class AddMenuSectionEntryToFavoritesResponse extends GenericResponse {
 }
 
 class RemoveMenuSectionEntryFromFavoritesResponse extends GenericResponse {
-  MenuSectionEntriesListEntry? menuSectionEntriesListEntry;
   Map<String, dynamic>? validationError;
 
-  RemoveMenuSectionEntryFromFavoritesResponse(
-      statusCode, this.menuSectionEntriesListEntry, this.validationError)
-      : super(statusCode);
+  RemoveMenuSectionEntryFromFavoritesResponse(statusCode, this.validationError) : super(statusCode);
 
   RemoveMenuSectionEntryFromFavoritesResponse.fromResponse(Response response)
-      : super.fromResponse(response) {
-    if (response.statusCode == 201) {
-      menuSectionEntriesListEntry =
-          MenuSectionEntriesListEntry.fromJson(response.data);
-    } else {
-      validationError = response.data;
-    }
-  }
+      : super.fromResponse(response);
 }
 
 class OrderCreateResponse extends GenericResponse {
@@ -462,7 +451,7 @@ class APIClient {
       String menuSectionEntriesListEntryId) async {
     return RemoveMenuSectionEntryFromFavoritesResponse.fromResponse(
         await _dio.delete(
-      "$apiBaseUrl/catalogue/menusectionentrieslistentry/$menuSectionEntriesListEntryId",
+      "$apiBaseUrl/catalogue/menusectionentrieslistentry/$menuSectionEntriesListEntryId/",
       options: Options(
           validateStatus: (status) => status! < 500,
           headers: {'Authorization': 'Bearer $accessToken'}),

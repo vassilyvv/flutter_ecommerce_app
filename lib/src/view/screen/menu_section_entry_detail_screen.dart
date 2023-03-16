@@ -223,9 +223,9 @@ class MenuSectionEntryDetailScreenState
               style: Theme.of(context).textTheme.displayLarge,
             ),
             const Spacer(),
-            const Text(
-              "Available in stock",
-              style: TextStyle(fontWeight: FontWeight.w500),
+            Text(
+              "${_selectedOffer.reserve} in stock",
+              style: const TextStyle(fontWeight: FontWeight.w500),
             )
           ],
         ),

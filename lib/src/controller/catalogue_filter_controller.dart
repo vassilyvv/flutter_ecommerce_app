@@ -54,22 +54,22 @@ class CatalogueFilterController extends GetxController with StateMixin {
     update();
   }
 
-  Future<MenuSectionEntriesListEntry?> addMenuSectionEntryToFavorites(
+  Future<String?> addMenuSectionEntryToFavorites(
       MenuSectionEntry menuSectionEntry) async {
     String? accessToken =
         Get.put(AuthController()).authenticatedUser.value?.accessToken;
     if (accessToken != null) {
-      MenuSectionEntriesListEntry? createdEntry = (await APIClient()
+      String? createdEntryId = (await APIClient()
               .addMenuSectionEntryToFavorites(accessToken, menuSectionEntry))
-          .menuSectionEntriesListEntry;
-      if (createdEntry != null) {
+          .menuSectionEntriesListEntryId;
+      if (createdEntryId != null) {
         filteredMenuSectionEntries
             .firstWhere(
                 (menuSectionEntry) => menuSectionEntry == menuSectionEntry)
-            .favoriteEntry = createdEntry.id;
+            .favoriteEntry = createdEntryId;
       }
-      update();
-      return createdEntry;
+      filteredMenuSectionEntries.refresh();
+      return createdEntryId;
     }
     return null;
   }
@@ -81,7 +81,12 @@ class CatalogueFilterController extends GetxController with StateMixin {
     if (accessToken != null) {
       RemoveMenuSectionEntryFromFavoritesResponse? response = await APIClient()
           .removeFavoritesEntry(accessToken, menuSectionEntriesListEntryId);
-      if (response != null && response.statusCode < 300) {
+      if (response != null && response.statusCode == 204) {
+        filteredMenuSectionEntries
+            .firstWhere(
+                (menuSectionEntry) => menuSectionEntry == menuSectionEntry)
+            .favoriteEntry = null;
+        filteredMenuSectionEntries.refresh();
         return true;
       }
     }
