@@ -111,12 +111,13 @@ class MenuSectionEntryDetailScreenState
     );
   }
 
-  Widget _ratingBar(BuildContext context) {
+  Widget _ratingBar() {
     return Wrap(
       spacing: 30,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         RatingBar.builder(
+          itemSize: 25,
           initialRating: _selectedOffer.userRating ?? _selectedOffer.rating,
           direction: Axis.horizontal,
           itemBuilder: (_, __) => const Icon(Icons.star, color: Colors.amber),
@@ -183,7 +184,10 @@ class MenuSectionEntryDetailScreenState
   Widget _offerSpecificContent(Offer offer) {
     return Column(
       children: [
-        _ratingBar(context),
+        Row(children:[_ratingBar(),const Spacer(),
+          if (_selectedOffer.outcomeNode != null)
+            TextButton(onPressed: () {  },
+            child:Text(_selectedOffer.outcomeNode!.company!.translations['en']!['name']!))]),
         const SizedBox(height: 30),
         Row(
           children: [

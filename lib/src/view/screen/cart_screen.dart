@@ -10,16 +10,6 @@ final CartController cartController = Get.put(CartController());
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
 
-  //
-  // PreferredSizeWidget _appBar(BuildContext context) {
-  //   return AppBar(
-  //     title: Text(
-  //       "My cart",
-  //       style: Theme.of(context).textTheme.displaySmall,
-  //     ),
-  //   );
-  // }
-
   Widget cartList() {
     return SingleChildScrollView(
         child: Column(
@@ -32,7 +22,7 @@ class CartScreen extends StatelessWidget {
           ),
           child: Row(children: [
             Container(
-              margin: const EdgeInsets.all(20),
+                margin: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10)),
@@ -53,7 +43,6 @@ class CartScreen extends StatelessWidget {
                     fontSize: 15,
                   ),
                 ),
-
                 const SizedBox(
                   height: 10,
                 ),
