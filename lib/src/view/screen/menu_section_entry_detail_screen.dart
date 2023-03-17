@@ -143,6 +143,7 @@ class MenuSectionEntryDetailScreenState
 
   MaterialButton _addToCartButton(BuildContext context) {
     return MaterialButton(
+      padding: const EdgeInsets.all(20),
       color: Colors.deepOrange,
       textColor: Colors.white,
       onPressed: () =>
@@ -154,6 +155,7 @@ class MenuSectionEntryDetailScreenState
   MaterialButton _goToCartButton(BuildContext context) {
     return MaterialButton(
       color: Colors.green,
+      padding: const EdgeInsets.all(20),
       textColor: Colors.white,
       onPressed: () {
         _goBack(context);
@@ -288,7 +290,7 @@ class MenuSectionEntryDetailScreenState
         child: Scaffold(
       extendBodyBehindAppBar: true,
       appBar: _appBar(context),
-      body: Column(children: [
+      body: Padding(padding:const EdgeInsets.all(20),child:Column(children: [
         Expanded(
             child: SizedBox(
                 width: width,
@@ -308,10 +310,9 @@ class MenuSectionEntryDetailScreenState
                               .entries[index]
                               .asset));
                     }))),
-        const Spacer(),
         _optionsSelect(),
         _offerSpecificContent(_selectedOffer)
-      ]),
+      ])),
     ));
   }
 }

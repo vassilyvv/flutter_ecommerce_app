@@ -94,32 +94,41 @@ class AllProductsScreenState extends State<AllProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-            child: CustomScrollView(slivers: [
-      SliverToBoxAdapter(
-          child: Row(children: [
-        Expanded(
-            child: TextField(
-                controller: searchQueryController,
-                decoration: InputDecoration(labelText: 'search_query'.tr))),
-        ElevatedButton(
-          onPressed: () {
-            catalogueFilterController.search(searchQueryController.text);
-          },
-          style: ElevatedButton.styleFrom(
-            shape: const CircleBorder(),
-            padding: const EdgeInsets.all(10),
-          ),
-          child: const Icon(Icons.search),
-        )
-      ])),
-      SliverPersistentHeader(
-          pinned: true,
-          delegate: PersistentHeaderDelegate(
-              fadeOutOnScroll: false,
-              widget: Column(children: [
-                Align(alignment: Alignment.centerLeft, child: _menu())
-              ]))),
-      SliverToBoxAdapter(child: MenuSectionEntriesGridView(favorites: false))
-    ])));
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: CustomScrollView(slivers: [
+                  SliverToBoxAdapter(
+                      child: Row(children: [
+                    Expanded(
+                        child: TextField(
+                            controller: searchQueryController,
+                            decoration:
+                                InputDecoration(labelText: 'search_query'.tr))),
+                    ElevatedButton(
+                      onPressed: () {
+                        catalogueFilterController
+                            .search(searchQueryController.text);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(10),
+                      ),
+                      child: const Icon(Icons.search),
+                    )
+                  ])),
+                  SliverPersistentHeader(
+                      pinned: true,
+                      delegate: PersistentHeaderDelegate(
+                          fadeOutOnScroll: false,
+                          widget: Column(children: [
+                            Align(
+                                alignment: Alignment.centerLeft, child: _menu())
+                          ]))),
+                  SliverToBoxAdapter(child: Obx(() {
+                    return MenuSectionEntriesGridView(
+                        menuSectionEntriesToDisplay: catalogueFilterController
+                            .filteredMenuSectionEntries.value);
+                  }))
+                ]))));
   }
 }

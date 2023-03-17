@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../controller/catalogue_filter_controller.dart';
+import '../../../controller/catalogue_filter_controller.dart';
 
 final CatalogueFilterController controller = Get.put(CatalogueFilterController());
 

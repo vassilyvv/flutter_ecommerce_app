@@ -37,7 +37,7 @@ class CartController extends GetxController {
     for (MapEntry<Offer, int> cartEntry in cart.entries) {
       for (TransactionTemplateEntry tte in cartEntry.key.incomeTransactionTemplate.entries) {
         result[tte.asset] ??= 0;
-        result[tte.asset] = cartEntry.value * tte.amount;
+        result[tte.asset] = result[tte.asset]! + cartEntry.value * tte.amount;
       }
     }
     totalPrice.value = result;

@@ -2,22 +2,23 @@ import 'package:e_commerce_flutter/src/controller/catalogue_filter_controller.da
 import 'package:e_commerce_flutter/src/view/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:e_commerce_flutter/src/view/animation/open_container_wrapper.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../model/catalogue/menu_section_entry.dart';
 import '../../model/trade/offer.dart';
 
-const gridItemHeight = 220.0;
 const gridItemWidth = 200.0;
-const gridImageHeight = 170.0;
+const gridItemHeight = 220.0;
+const gridImageHeight = 160.0;
+
 CatalogueFilterController catalogueFilterController =
     Get.put(CatalogueFilterController());
 
 class MenuSectionEntriesGridView extends StatelessWidget {
-  MenuSectionEntriesGridView({Key? key, required this.favorites}) : super(key: key);
-  bool favorites;
+  const MenuSectionEntriesGridView(
+      {Key? key, required this.menuSectionEntriesToDisplay})
+      : super(key: key);
+  final List<MenuSectionEntry> menuSectionEntriesToDisplay;
 
   Widget _addToFavoritesButton(MenuSectionEntry menuSectionEntry) {
     return IconButton(
@@ -70,8 +71,7 @@ class MenuSectionEntriesGridView extends StatelessWidget {
                 Row(children: [
                   Expanded(
                       child: Text(offer.assetNames.toSet().toList().join(','),
-                          textAlign: TextAlign.left,
-                          maxLines: 1))
+                          textAlign: TextAlign.left, maxLines: 1))
                 ])
               ]),
             )));
@@ -80,48 +80,38 @@ class MenuSectionEntriesGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    List<MenuSectionEntry> menuSectionEntriesToDisplay = catalogueFilterController.filteredMenuSectionEntries;
-    if (favorites) {
-      menuSectionEntriesToDisplay = menuSectionEntriesToDisplay.where((menuSectionEntry) => menuSectionEntry.favoriteEntry !=null).toList();
-    }
-    return Obx(
-      () {
-        return catalogueFilterController.filteredMenuSectionEntries.isNotEmpty
-            ? GridView.builder(
-                padding: const EdgeInsets.all(0),
-                itemCount:
-                menuSectionEntriesToDisplay.length,
-                shrinkWrap: true,
-                physics: const ScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: gridItemWidth / gridItemHeight,
-                    crossAxisCount: size.width ~/ gridItemWidth,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10),
-                itemBuilder: (_, index) {
-                  MenuSectionEntry menuSectionEntry = menuSectionEntriesToDisplay[index];
-                  return GridTile(
-                      child: OpenContainerWrapper(
-                    menuSectionEntry: menuSectionEntry,
-                    child: Stack(children: [
-                      PageView(
-                          children: menuSectionEntry.offers
-                              .map((offer) => Column(children: [
-                                    _offerImagesPageView(offer),
-                                    _offerFooter(offer)
-                                    //Row(children:[_offerFooter(offer), _addToFavoritesButton(menuSectionEntry, index)])
-                                  ]))
-                              .toList()),
-                      if (authController.authenticatedUser.value?.accessToken != null) Positioned(
-                        right: 5,
-                        bottom: 7,
-                        child: _addToFavoritesButton(menuSectionEntry),
-                      )
-                    ]),
-                  ));
-                },
+    return GridView.builder(
+      padding: const EdgeInsets.all(0),
+      itemCount: menuSectionEntriesToDisplay.length,
+      shrinkWrap: true,
+      physics: const ScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          childAspectRatio: gridItemWidth / gridItemHeight,
+          crossAxisCount: size.width ~/ gridItemWidth,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10),
+      itemBuilder: (_, index) {
+        MenuSectionEntry menuSectionEntry = menuSectionEntriesToDisplay[index];
+        return GridTile(
+            child: OpenContainerWrapper(
+          menuSectionEntry: menuSectionEntry,
+          child: Stack(children: [
+            PageView(
+                children: menuSectionEntry.offers
+                    .map((offer) => Column(children: [
+                          _offerImagesPageView(offer),
+                          Expanded(child: _offerFooter(offer))
+                          //Row(children:[_offerFooter(offer), _addToFavoritesButton(menuSectionEntry, index)])
+                        ]))
+                    .toList()),
+            if (authController.authenticatedUser.value?.accessToken != null)
+              Positioned(
+                right: 5,
+                bottom: 7,
+                child: _addToFavoritesButton(menuSectionEntry),
               )
-            : const Text('no elements');
+          ]),
+        ));
       },
     );
   }

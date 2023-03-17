@@ -21,7 +21,6 @@ class HomeScreen extends StatelessWidget {
 
   static const List<Widget> screens = [
     AllProductScreen(),
-    // SearchScreen(),
     FavoritesScreen(),
     CartScreen(),
     AuthScreen()
