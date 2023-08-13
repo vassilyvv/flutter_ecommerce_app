@@ -15,9 +15,10 @@ class AppTheme {
       ),
     ),
     inputDecorationTheme: const InputDecorationTheme(
-      labelStyle: TextStyle(color: themeColor),
-      focusedBorder:
-            UnderlineInputBorder(borderSide: BorderSide(color: themeColor))),
+        labelStyle: TextStyle(color: themeColor),
+        border: OutlineInputBorder(borderSide: BorderSide()),
+        focusedBorder:
+            OutlineInputBorder(borderSide: BorderSide(color: themeColor))),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
           foregroundColor: themeColor, textStyle: GoogleFonts.nunitoSans()),

@@ -12,6 +12,7 @@ class AppTranslations extends Translations {
       'last_name': 'Last name',
       'enter_last_name': 'Enter last name',
       'email': 'Email',
+      'search_query': 'Search',
       'enter_email': 'Enter email',
       'phone_number': 'Phone number',
       'enter_phone_number': 'Enter phone number',

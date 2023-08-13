@@ -6,7 +6,6 @@ import 'package:very_supply_mobile_marketplace_1/src/view/animation/open_contain
 import 'package:very_supply_api_client/models/catalogue/menu_section_entry.dart';
 import 'package:very_supply_api_client/models/trade/offer.dart';
 
-
 const gridItemWidth = 200.0;
 const gridItemHeight = 220.0;
 const gridImageHeight = 160.0;

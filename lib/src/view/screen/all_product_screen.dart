@@ -98,7 +98,9 @@ class AllProductsScreenState extends State<AllProductScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: CustomScrollView(slivers: [
                   SliverToBoxAdapter(
-                      child: Row(children: [
+                      child: Column(children:[
+                        const SizedBox(height: 5),
+                        Row(children: [
                     Expanded(
                         child: TextField(
                             controller: searchQueryController,
@@ -115,7 +117,7 @@ class AllProductsScreenState extends State<AllProductScreen> {
                       ),
                       child: const Icon(Icons.search),
                     )
-                  ])),
+                  ])])),
                   SliverPersistentHeader(
                       pinned: true,
                       delegate: PersistentHeaderDelegate(

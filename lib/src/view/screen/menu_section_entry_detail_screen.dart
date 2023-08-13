@@ -88,10 +88,14 @@ class MenuSectionEntryDetailScreenState
             },
             itemBuilder: (_, index) {
               return FittedBox(
-                child: Image.network(
+                child: Container(
+                  decoration: const BoxDecoration(
+                  //color: Colors.white,
+              ),
+              child: Image.network(
                     height: height * 0.11,
                     fit: BoxFit.fitWidth,
-                    asset.images[index]),
+                    asset.images[index])),
               );
             },
           ),
@@ -185,15 +189,12 @@ class MenuSectionEntryDetailScreenState
   Widget _offerSpecificContent(Offer offer) {
     return Column(
       children: [
-        Row(children: [
-          _ratingBar(),
-          const Spacer(),
-          if (_selectedOffer.outcomeNode != null)
-            TextButton(
-                onPressed: () {},
-                child: Text(_selectedOffer
-                    .outcomeNode!.company!.translations['en']!['name']!))
-        ]),
+        _ratingBar(),
+        if (_selectedOffer.outcomeNode != null)
+          TextButton(
+              onPressed: () {},
+              child: Text(_selectedOffer
+                  .outcomeNode!.company!.translations['en']!['name']!)),
         const SizedBox(height: 30),
         Row(
           children: [
