@@ -1,13 +1,14 @@
-import 'package:e_commerce_flutter/src/controller/auth_controller.dart';
+import 'package:very_supply_mobile_marketplace_1/src/controller/auth_controller.dart';
 import 'package:get/get.dart';
+import 'package:very_supply_api_client/api/client.dart';
+import 'package:very_supply_api_client/api/responses.dart';
+import 'package:very_supply_api_client/models/catalogue/menu_section.dart';
+import 'package:very_supply_api_client/models/catalogue/menu_section_entry.dart';
 
-import '../model/catalogue/menu_section.dart';
-import '../model/catalogue/menu_section_entries_list_entry.dart';
-import '../model/catalogue/menu_section_entry.dart';
-import 'api/client.dart';
-
-const String marketplaceId = String.fromEnvironment('apiBaseUrl',
-    defaultValue: 'effe47ef-1614-498c-b541-caaff951e7a7');
+const String marketplaceId = String.fromEnvironment('marketplaceId',
+    defaultValue: '593da4b7-d01f-43e6-bb8b-78f108bc245e');
+const String favoritesListId = String.fromEnvironment('favoritesListId',
+    defaultValue: '6a1be20c-7f40-4963-b159-9703fb2ddef4');
 
 class CatalogueFilterController extends GetxController with StateMixin {
   Rx<MenuSection?> selectedMenuSection = Rx<MenuSection?>(null);
@@ -16,9 +17,10 @@ class CatalogueFilterController extends GetxController with StateMixin {
       <MenuSectionEntry>[].obs;
 
   Future<void> selectRootMenuSection(String? companyId) async {
-    selectedMenuSection.value = (await APIClient()
-            .getMarketplaceRootMenuSection(marketplaceId, companyId))
-        .menuSection;
+    selectedMenuSection.value =
+        (await apiMethods['getMarketplaceRootMenuSection']!(
+                {'marketplaceId': marketplaceId, 'companyId': companyId}))
+            .menuSection;
     update();
   }
 
@@ -48,9 +50,14 @@ class CatalogueFilterController extends GetxController with StateMixin {
       String? menuSectionId, String? searchQuery) async {
     String? accessToken =
         Get.put(AuthController()).authenticatedUser.value?.accessToken;
-    List<MenuSectionEntry> result = (await APIClient().getMenuSectionEntries(
-            accessToken, menuSectionEntriesListId, menuSectionId, searchQuery))
-        .menuSectionEntries;
+    List<MenuSectionEntry> result =
+        (await apiMethods['getMenuSectionEntries']!({
+      'accessToken': accessToken,
+      'menuSectionEntriesListId': menuSectionEntriesListId,
+      'menuSectionId': menuSectionId,
+      'searchQuery': searchQuery
+    }))
+            .menuSectionEntries;
     filteredMenuSectionEntries.assignAll(result);
     update();
   }
@@ -60,13 +67,17 @@ class CatalogueFilterController extends GetxController with StateMixin {
     String? accessToken =
         Get.put(AuthController()).authenticatedUser.value?.accessToken;
     if (accessToken != null) {
-      String? createdEntryId = (await APIClient()
-              .addMenuSectionEntryToFavorites(accessToken, menuSectionEntryToAddToFavorites))
-          .menuSectionEntriesListEntryId;
+      String? createdEntryId =
+          (await apiMethods['addMenuSectionEntryToMenuSectionEntriesList']!({
+        'accessToken': accessToken,
+        'menuSectionEntryId': menuSectionEntryToAddToFavorites.id,
+        'menuSectionEntriesListId': favoritesListId
+      }))
+              .menuSectionEntriesListEntryId;
       if (createdEntryId != null) {
         filteredMenuSectionEntries
-            .firstWhere(
-                (menuSectionEntry) => menuSectionEntry == menuSectionEntryToAddToFavorites)
+            .firstWhere((menuSectionEntry) =>
+                menuSectionEntry == menuSectionEntryToAddToFavorites)
             .favoriteEntry = createdEntryId;
       }
       filteredMenuSectionEntries.refresh();
@@ -80,12 +91,13 @@ class CatalogueFilterController extends GetxController with StateMixin {
     String? accessToken =
         Get.put(AuthController()).authenticatedUser.value?.accessToken;
     if (accessToken != null) {
-      RemoveMenuSectionEntryFromFavoritesResponse? response = await APIClient()
-          .removeFavoritesEntry(accessToken, menuSectionEntriesListEntryId);
+      RemoveMenuSectionEntryFromFavoritesResponse? response =
+          await apiMethods['removeMenuSectionEntryFromMenuSectionEntriesList']!(
+              {'accessToken': accessToken, 'menuSectionEntriesListEntryId':menuSectionEntriesListEntryId});
       if (response != null && response.statusCode == 204) {
         filteredMenuSectionEntries
-            .firstWhere(
-                (menuSectionEntry) => menuSectionEntry.favoriteEntry == menuSectionEntriesListEntryId)
+            .firstWhere((menuSectionEntry) =>
+                menuSectionEntry.favoriteEntry == menuSectionEntriesListEntryId)
             .favoriteEntry = null;
         filteredMenuSectionEntries.refresh();
         return true;

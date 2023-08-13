@@ -1,16 +1,17 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:e_commerce_flutter/core/app_color.dart';
+import 'package:very_supply_mobile_marketplace_1/core/app_color.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:very_supply_api_client/api/client.dart';
+import 'package:very_supply_api_client/models/auth/user.dart';
+import 'package:very_supply_api_client/models/catalogue/asset.dart';
+import 'package:very_supply_api_client/models/catalogue/menu_section_entry.dart';
+import 'package:very_supply_api_client/models/trade/offer.dart';
 
 import '../../controller/auth_controller.dart';
 import '../../controller/cart_controller.dart';
 import '../../controller/nav_controller.dart';
-import '../../model/auth/user.dart';
-import '../../model/catalogue/asset.dart';
-import '../../model/catalogue/menu_section_entry.dart';
-import '../../model/trade/offer.dart';
 
 final CartController cartController = Get.put(CartController());
 final NavController navController = Get.put(NavController());
@@ -90,7 +91,7 @@ class MenuSectionEntryDetailScreenState
                 child: Image.network(
                     height: height * 0.11,
                     fit: BoxFit.fitWidth,
-                    'http://localhost:8000${asset.images[index]}'),
+                    asset.images[index]),
               );
             },
           ),
@@ -124,7 +125,7 @@ class MenuSectionEntryDetailScreenState
           onRatingUpdate: (newRating) {
             User? authenticatedUser = authController.authenticatedUser.value;
             if (authenticatedUser != null) {
-              apiClient.rateOffer(authenticatedUser.accessToken!,
+              apiMethods['rateOffer']!(authenticatedUser.accessToken!,
                   _selectedOffer.id, newRating.toInt());
             } else {
               print('not authenticated');
@@ -184,10 +185,15 @@ class MenuSectionEntryDetailScreenState
   Widget _offerSpecificContent(Offer offer) {
     return Column(
       children: [
-        Row(children:[_ratingBar(),const Spacer(),
+        Row(children: [
+          _ratingBar(),
+          const Spacer(),
           if (_selectedOffer.outcomeNode != null)
-            TextButton(onPressed: () {  },
-            child:Text(_selectedOffer.outcomeNode!.company!.translations['en']!['name']!))]),
+            TextButton(
+                onPressed: () {},
+                child: Text(_selectedOffer
+                    .outcomeNode!.company!.translations['en']!['name']!))
+        ]),
         const SizedBox(height: 30),
         Row(
           children: [
@@ -294,29 +300,31 @@ class MenuSectionEntryDetailScreenState
         child: Scaffold(
       extendBodyBehindAppBar: true,
       appBar: _appBar(context),
-      body: Padding(padding:const EdgeInsets.all(20),child:Column(children: [
-        Expanded(
-            child: SizedBox(
-                width: width,
-                child: PageView.builder(
-                    itemCount: _selectedOffer
-                        .outcomeTransactionTemplate.entries.length,
-                    controller: _assetPageController,
-                    onPageChanged: (index) {
-                      setState(() {
-                        selectedAssetIndex = index;
-                      });
-                    },
-                    itemBuilder: (_, index) {
-                      return SingleChildScrollView(
-                          child: _assetSpecificContent(_selectedOffer
-                              .outcomeTransactionTemplate
-                              .entries[index]
-                              .asset));
-                    }))),
-        _optionsSelect(),
-        _offerSpecificContent(_selectedOffer)
-      ])),
+      body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(children: [
+            Expanded(
+                child: SizedBox(
+                    width: width,
+                    child: PageView.builder(
+                        itemCount: _selectedOffer
+                            .outcomeTransactionTemplate.entries.length,
+                        controller: _assetPageController,
+                        onPageChanged: (index) {
+                          setState(() {
+                            selectedAssetIndex = index;
+                          });
+                        },
+                        itemBuilder: (_, index) {
+                          return SingleChildScrollView(
+                              child: _assetSpecificContent(_selectedOffer
+                                  .outcomeTransactionTemplate
+                                  .entries[index]
+                                  .asset));
+                        }))),
+            _optionsSelect(),
+            _offerSpecificContent(_selectedOffer)
+          ])),
     ));
   }
 }

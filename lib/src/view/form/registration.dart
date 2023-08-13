@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:very_supply_api_client/api/client.dart';
 
 import '../../controller/auth_controller.dart';
 import '../constants.dart';
@@ -97,8 +98,7 @@ class RegistrationFormState extends State<RegistrationForm> {
           ElevatedButton(
             onPressed: () {
               if (formKey.currentState!.validate()) {
-                apiClient
-                    .register(
+                apiMethods['register']!(
                         firstNameController.text,
                         lastNameController.text,
                         phoneNumberController.text,

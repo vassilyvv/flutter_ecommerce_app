@@ -3,13 +3,9 @@ import 'dart:ui';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-
-import '../model/auth/user.dart';
-import 'api/client.dart';
-
-final apiClient = APIClient();
+import 'package:very_supply_api_client/api/client.dart';
+import 'package:very_supply_api_client/api/responses.dart';
+import 'package:very_supply_api_client/models/auth/user.dart';
 
 class AuthController extends GetxController {
   Rx<User?> authenticatedUser = Rx<User?>(null);
@@ -29,8 +25,9 @@ class AuthController extends GetxController {
     dio.Response response =
         await tokenManipulation(authenticatedUser.value!.accessToken!);
     if (response.statusCode == 401) {
-      TokenRefreshResponse tokenRefreshResponse = await apiClient
-          .refreshAccessToken(authenticatedUser.value!.refreshToken!);
+      TokenRefreshResponse tokenRefreshResponse =
+          apiMethods['refreshAccessToken']!(
+              authenticatedUser.value!.refreshToken!);
       if (tokenRefreshResponse.statusCode >= 400) {
         return response;
       }
@@ -43,11 +40,12 @@ class AuthController extends GetxController {
   }
 
   void authenticate(String phoneNumber, String password, String? otp) async {
-    LoginResponse loginResponse =
-        await apiClient.authenticate(phoneNumber, password, otp);
+    LoginResponse loginResponse = await apiMethods['authenticate']!(
+        {'phoneNumber': phoneNumber, 'password': password, 'otp': otp});
     if (loginResponse.statusCode == 200) {
       UserDataResponse authenticatedUserDataResponse =
-          await apiClient.getAuthenticatedUserData(loginResponse.accessToken!);
+          await apiMethods['getAuthenticatedUserData']!(
+              {'accessToken': loginResponse.accessToken!});
       authenticatedUser.value = authenticatedUserDataResponse.user;
       authenticatedUser.value!.accessToken = loginResponse.accessToken;
       authenticatedUser.value!.refreshToken = loginResponse.refreshToken;
@@ -68,8 +66,8 @@ class AuthController extends GetxController {
       update();
       return null;
     }
-    final refreshedAccessToken = (await apiClient
-            .refreshAccessToken(authenticatedUser.value!.refreshToken!))
+    final refreshedAccessToken = (await apiMethods['refreshAccessToken']!(
+            {'refreshToken': authenticatedUser.value!.refreshToken!}))
         .refreshedAccessToken;
     if (refreshedAccessToken == null) {
       update();

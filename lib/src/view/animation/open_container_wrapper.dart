@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
+import 'package:very_supply_api_client/models/catalogue/menu_section_entry.dart';
 
-import '../../model/catalogue/menu_section_entry.dart';
 import '../screen/menu_section_entry_detail_screen.dart';
 
 class OpenContainerWrapper extends StatelessWidget {

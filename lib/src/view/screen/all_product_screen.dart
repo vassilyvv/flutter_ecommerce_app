@@ -1,7 +1,7 @@
-import 'package:e_commerce_flutter/src/controller/catalogue_filter_controller.dart';
+import 'package:very_supply_mobile_marketplace_1/src/controller/catalogue_filter_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import '../../model/catalogue/menu_section.dart';
+import 'package:very_supply_api_client/models/catalogue/menu_section.dart';
 import '../widget/menu_section_entry_grid_view.dart';
 
 enum AppbarActionType { leading, trailing }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:very_supply_api_client/api/client.dart';
 
-import '../../controller/api/client.dart';
 import '../../controller/auth_controller.dart';
 import '../constants.dart';
 import '../widget/fields/phone_number.dart';
@@ -60,8 +60,7 @@ class ResetPasswordFormState extends State<ResetPasswordForm> {
               ElevatedButton(
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
-                    APIClient()
-                        .resetPassword(
+                    apiMethods['resetPassword']!(
                       byPhoneNumber ? phoneNumberController.text : null,
                       byPhoneNumber ? null : emailController.text,
                     )

@@ -1,11 +1,13 @@
 import 'dart:ui';
-import 'package:e_commerce_flutter/src/view/translations.dart';
+import 'package:very_supply_mobile_marketplace_1/src/view/translations.dart';
 import 'package:flutter/material.dart';
-import 'package:e_commerce_flutter/core/app_theme.dart';
-import 'package:e_commerce_flutter/src/view/screen/home_screen.dart';
+import 'package:very_supply_mobile_marketplace_1/core/app_theme.dart';
+import 'package:very_supply_mobile_marketplace_1/src/view/screen/home_screen.dart';
 import 'package:get/get.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

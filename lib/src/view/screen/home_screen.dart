@@ -1,12 +1,12 @@
-import 'package:e_commerce_flutter/src/controller/auth_controller.dart';
-import 'package:e_commerce_flutter/src/controller/catalogue_filter_controller.dart';
-import 'package:e_commerce_flutter/src/controller/nav_controller.dart';
+import 'package:very_supply_mobile_marketplace_1/src/controller/auth_controller.dart';
+import 'package:very_supply_mobile_marketplace_1/src/controller/catalogue_filter_controller.dart';
+import 'package:very_supply_mobile_marketplace_1/src/controller/nav_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
-import 'package:e_commerce_flutter/src/view/screen/cart_screen.dart';
-import 'package:e_commerce_flutter/src/view/screen/profile_screen.dart';
-import 'package:e_commerce_flutter/src/view/screen/all_product_screen.dart';
+import 'package:very_supply_mobile_marketplace_1/src/view/screen/cart_screen.dart';
+import 'package:very_supply_mobile_marketplace_1/src/view/screen/profile_screen.dart';
+import 'package:very_supply_mobile_marketplace_1/src/view/screen/all_product_screen.dart';
 
 import '../../../core/app_data.dart';
 import 'favorites_screen.dart';

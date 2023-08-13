@@ -1,5 +1,6 @@
-import 'package:e_commerce_flutter/src/model/bottom_nav_bar_item.dart';
 import 'package:flutter/material.dart';
+
+import '../src/models/bottom_nav_bar_item.dart';
 
 class AppData {
   static List<BottomNavBarItem> bottomNavBarItems = [

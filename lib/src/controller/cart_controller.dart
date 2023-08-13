@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
+import 'package:very_supply_api_client/models/catalogue/asset.dart';
+import 'package:very_supply_api_client/models/trade/offer.dart';
+import 'package:very_supply_api_client/models/trade/transaction_template_entry.dart';
 
-import '../model/catalogue/asset.dart';
-import '../model/trade/transaction_template_entry.dart';
-import '../model/trade/offer.dart';
 
 class CartController extends GetxController {
   RxMap<Offer, int> cart = <Offer, int>{}.obs;

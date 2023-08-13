@@ -1,11 +1,11 @@
-import 'package:e_commerce_flutter/src/controller/catalogue_filter_controller.dart';
-import 'package:e_commerce_flutter/src/view/screen/home_screen.dart';
+import 'package:very_supply_mobile_marketplace_1/src/controller/catalogue_filter_controller.dart';
+import 'package:very_supply_mobile_marketplace_1/src/view/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:e_commerce_flutter/src/view/animation/open_container_wrapper.dart';
+import 'package:very_supply_mobile_marketplace_1/src/view/animation/open_container_wrapper.dart';
+import 'package:very_supply_api_client/models/catalogue/menu_section_entry.dart';
+import 'package:very_supply_api_client/models/trade/offer.dart';
 
-import '../../model/catalogue/menu_section_entry.dart';
-import '../../model/trade/offer.dart';
 
 const gridItemWidth = 200.0;
 const gridItemHeight = 220.0;
@@ -48,8 +48,7 @@ class MenuSectionEntriesGridView extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               return Container(
                   color: Colors.white,
-                  child: Image.network(
-                      "http://localhost:8000${offer.images[index]}"));
+                  child: Image.network(offer.images[index]));
             }));
   }
 

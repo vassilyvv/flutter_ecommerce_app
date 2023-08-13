@@ -1,4 +1,4 @@
-name: e_commerce_flutter
+name: very_supply_mobile_marketplace_1
 description: E-Commerce App built in flutter using GetX
 
 
@@ -15,12 +15,13 @@ dependencies:
     sdk: flutter
   get: ^4.6.5
   smooth_page_indicator: ^1.0.1
+  very_supply_api_client: ^0.0.15
   flutter_rating_bar: ^4.0.1
   google_fonts: ^4.0.3
   font_awesome_flutter: ^10.4.0
   animations: ^2.0.7
   dio: ^5.0.1
-  collection: ^1.17.0
+  collection: ^1.17.1
 
 dev_dependencies:
   flutter_lints: ^2.0.1

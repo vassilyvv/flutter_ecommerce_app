@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:e_commerce_flutter/src/view/widget/placeholders/empty_cart.dart';
-import 'package:e_commerce_flutter/src/view/animation/animated_switcher_wrapper.dart';
+import 'package:very_supply_mobile_marketplace_1/src/view/widget/placeholders/empty_cart.dart';
+import 'package:very_supply_mobile_marketplace_1/src/view/animation/animated_switcher_wrapper.dart';
 
 import '../../controller/cart_controller.dart';
 
@@ -26,8 +26,7 @@ class CartScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10)),
-                child: Image.network(
-                    'http://localhost:8000${cartEntry.key.images[0]}',
+                child: Image.network(cartEntry.key.images[0],
                     width: 90,
                     height: 90)),
             Column(

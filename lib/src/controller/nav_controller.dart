@@ -1,4 +1,4 @@
-import 'package:e_commerce_flutter/src/view/screen/home_screen.dart';
+import 'package:very_supply_mobile_marketplace_1/src/view/screen/home_screen.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';

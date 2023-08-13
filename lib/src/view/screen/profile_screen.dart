@@ -1,4 +1,4 @@
-import 'package:e_commerce_flutter/src/view/screen/profile_info.dart';
+import 'package:very_supply_mobile_marketplace_1/src/view/screen/profile_info.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
